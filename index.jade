@@ -1,0 +1,60 @@
+doctype
+html#ng-app(ng-app='app')
+  // id="ng-app" IE<8
+  head
+    title Simple example
+    link(rel='stylesheet', href='http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css')
+    // Fix for old browsers
+    script(src='http://code.jquery.com/jquery-1.8.3.min.js')
+    script(src='http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
+    script(src='bower_components/angular/angular.js')
+    script(src='bower_components/ngstorage/ngStorage.js')
+    script(src='bower_components/angular-file-upload/angular-file-upload.js')
+    script(src='app.js')
+    style.
+      .my-drop-zone { border: dotted 3px lightgray; }
+      .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+      .another-file-over-class { border: dotted 3px green; }
+      html, body { height: 100%; }
+  body(ng-controller='AppController', nv-file-drop='', uploader='uploader', filters='queueLimit, customFilter')
+    .container
+      .row
+        .col-md-3
+          h3 Select files
+          div(ng-show='uploader.isHTML5')
+            // 3. nv-file-over uploader="link" over-class="className"
+            .well.my-drop-zone(nv-file-over='', uploader='uploader') Base drop zone
+          | Single
+          input(type='file', nv-file-select='', uploader='uploader')
+        .col-md-9(style='margin-bottom: 40px')
+          h3 Upload queue
+          p Queue length: {{ uploader.queue.length }}
+          h2 Files
+          div(ng-repeat='item in uploader.queue')
+            strong {{ item.file.name }}
+            p(
+            ng-show='uploader.isHTML5',
+            nowrap='',
+            style='display: inline-block') {{ item.file.size/1024/1024|number:2 }} MB
+          div
+            div(style='margin-top: 80px')
+              | Queue progress:
+              .progress(style='')
+                .progress-bar(
+                role='progressbar',
+                ng-style="{ 'width': uploader.progress + '%' }")
+            button.btn.btn-success.btn-s(
+            type='button',
+            ng-click='uploader.uploadAll()',
+            ng-disabled='!uploader.getNotUploadedItems().length')
+              | Upload all
+            button.btn.btn-warning.btn-s(
+            type='button',
+            ng-click='uploader.cancelAll()',
+            ng-disabled='!uploader.isUploading')
+              | Cancel all
+            button.btn.btn-danger.btn-s(
+            type='button',
+            ng-click='uploader.clearQueue()',
+            ng-disabled='!uploader.queue.length')
+              | Remove all

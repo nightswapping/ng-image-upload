@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html id="ng-app" ng-app="app">
+  <!-- id="ng-app" IE<8-->
+  <head>
+    <title>Simple example</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <!-- Fix for old browsers-->
+    <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/ngstorage/ngStorage.js"></script>
+    <script src="bower_components/angular-file-upload/angular-file-upload.js"></script>
+    <script src="app.js"></script>
+    <style>
+      .my-drop-zone { border: dotted 3px lightgray; }
+      .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+      .another-file-over-class { border: dotted 3px green; }
+      html, body { height: 100%; }
+    </style>
+  </head>
+  <body ng-controller="AppController" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <h3>Select files</h3>
+          <div ng-show="uploader.isHTML5">
+            <!-- 3. nv-file-over uploader="link" over-class="className"-->
+            <div nv-file-over="" uploader="uploader" class="well my-drop-zone">Base drop zone</div>
+          </div>Single
+          <input type="file" nv-file-select="" uploader="uploader">
+        </div>
+        <div style="margin-bottom: 40px" class="col-md-9">
+          <h3>Upload queue</h3>
+          <p>Queue length: {{ uploader.queue.length }}</p>
+          <h2>Files</h2>
+          <div ng-repeat="item in uploader.queue"><strong>{{ item.file.name }}</strong>
+            <p ng-show="uploader.isHTML5" nowrap="" style="display: inline-block">{{ item.file.size/1024/1024|number:2 }} MB</p>
+          </div>
+          <div>
+            <div style="margin-top: 80px">Queue progress:
+              <div style="" class="progress">
+                <div role="progressbar" ng-style="{ 'width': uploader.progress + '%' }" class="progress-bar"></div>
+              </div>
+            </div>
+            <button type="button" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length" class="btn btn-success btn-s">Upload all</button>
+            <button type="button" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading" class="btn btn-warning btn-s">Cancel all</button>
+            <button type="button" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length" class="btn btn-danger btn-s">Remove all</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
