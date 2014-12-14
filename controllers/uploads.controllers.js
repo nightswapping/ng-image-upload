@@ -48,7 +48,7 @@
       // Add the img in session storage once added
       uploader.onAfterAddingFile = function(fileItem) {
         // Updates the url with the recieved token
-        uploader.url = 'upload/' + token;
+        uploader.url = 'upload?t=' + token;
 
         $log.info('onAfterAddingFile', fileItem);
         // TODO: resize/crop the img before storing/upload

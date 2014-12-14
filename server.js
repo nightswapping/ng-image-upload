@@ -23,8 +23,8 @@ app.get('/token', function (req, res) {
   res.send('8f40f9c6afe7003aa3a2fdbbea54e062084056ba073ebab2ec67392c8b3f99bf')
 })
 
-app.post('/upload/:token', function (req, res) {
-  console.log(req.params);
+app.post('/upload', function (req, res) {
+  console.log(req.query);
   console.log(req.files);
   res.sendStatus(200)
 })
