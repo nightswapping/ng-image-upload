@@ -36,6 +36,15 @@
         queueLimit: 1
       });
 
+      // Filters out the items that are not pictures
+      uploader.filters.push({
+          name: 'imageFilter',
+          fn: function(item /*{File|FileLikeObject}*/, options) {
+              var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
+              return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+          }
+      });
+
       // Add the img in session storage once added
       uploader.onAfterAddingFile = function(fileItem) {
         // Updates the url with the recieved token
