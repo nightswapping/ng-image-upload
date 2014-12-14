@@ -40,12 +40,11 @@
 
       // Filters out the items that are not pictures
       uploader.filters.push({
-          name: 'imageFilter',
-          fn: function(item /*{File|FileLikeObject}*/, options) {
-              console.log(item);
-              var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
-              return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
-          }
+        name: 'imageFilter',
+        fn: function(item /*{File|FileLikeObject}*/, options) {
+          var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
+          return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+        }
       });
 
       // Add the img in session storage once added

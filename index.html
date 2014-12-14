@@ -21,16 +21,15 @@
       html, body { height: 100%; }
     </style>
   </head>
-  <body ng-controller="uploads.controllers" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+  <body ng-controller="uploads.controllers" nv-file-drop="" uploader="uploader">
     <div ng-switch="tokenStatus" class="container">
       <div ng-switch-when="recieved" class="row">
         <div class="col-md-3">
           <h3>Select files</h3>
           <div ng-show="uploader.isHTML5">
-            <!-- 3. nv-file-over uploader="link" over-class="className"-->
-            <div nv-file-over="" uploader="uploader" filters="imageFilter" class="well my-drop-zone">Base drop zone</div>
+            <div nv-file-over="" uploader="uploader" class="well my-drop-zone">Base drop zone</div>
           </div>Single
-          <input type="file" nv-file-select="" uploader="uploader" filters="imageFilter">
+          <input type="file" nv-file-select="" uploader="uploader">
         </div>
         <div style="margin-bottom: 40px" class="col-md-9">
           <h2>Files</h2>
@@ -39,9 +38,8 @@
             <p ng-show="uploader.isHTML5" nowrap="" style="display: inline-block">{{ item.file.size/1024/1024|number:2 }} MB</p>
           </div>
           <div>
-            <button type="button" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length" class="btn btn-success btn-s">Upload all</button>
-            <button type="button" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading" class="btn btn-warning btn-s">Cancel all</button>
-            <button type="button" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length" class="btn btn-danger btn-s">Remove all</button>
+            <button type="button" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length" class="btn btn-success btn-s">Upload picture</button>
+            <button type="button" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length" class="btn btn-danger btn-s">Remove picture</button>
           </div>
         </div>
       </div>
