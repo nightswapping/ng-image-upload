@@ -14,8 +14,10 @@
           return;
         }
 
+        // Get the params from ng-thumb
         var params = scope.$eval(attributes.ngThumb);
 
+        // Check file format
         if (!uploadsUtils.isFile(params.file) ||
           !uploadsUtils.isImage(params.file)) {
             return;
