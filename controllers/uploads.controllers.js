@@ -54,12 +54,12 @@
         uploader.url = 'upload?t=' + token;
 
         $log.info('onAfterAddingFile', fileItem);
-        // TODO: resize/crop the img before storing/upload
 
         // Check the img can fit into the session storage
         isFileTooBig = fileItem.file.size > 5000000;
 
         // TODO: check once the picture has been resized
+        // rather than here
         if (isFileTooBig)
           return;
 
@@ -70,7 +70,8 @@
         reader.readAsDataURL(fileItem._file);
         reader.onload = onLoad;
 
-        // Create a hidden canvas to resize the picture
+        // To resize the picture we need a hidden canvas
+        // to draw a new pic with the expected dimensions
         var canvas = document.createElement('canvas');
         canvas.style.visibility = 'hidden';
         document.body.appendChild(canvas);
