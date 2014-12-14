@@ -28,9 +28,9 @@
           <h3>Select files</h3>
           <div ng-show="uploader.isHTML5">
             <!-- 3. nv-file-over uploader="link" over-class="className"-->
-            <div nv-file-over="" uploader="uploader" class="well my-drop-zone">Base drop zone</div>
+            <div nv-file-over="" uploader="uploader" filters="imageFilter" class="well my-drop-zone">Base drop zone</div>
           </div>Single
-          <input type="file" nv-file-select="" uploader="uploader">
+          <input type="file" nv-file-select="" uploader="uploader" filters="imageFilter">
         </div>
         <div style="margin-bottom: 40px" class="col-md-9">
           <h2>Files</h2>

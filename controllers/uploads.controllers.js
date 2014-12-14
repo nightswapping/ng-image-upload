@@ -33,13 +33,16 @@
         // Url to hit for the post request
         url: 'upload/',
         // Only one picture should be uploaded
-        queueLimit: 1
+        queueLimit: 1,
+        // Remove file from queue, hence on screen, after upload
+        removeAfterUpload: true
       });
 
       // Filters out the items that are not pictures
       uploader.filters.push({
           name: 'imageFilter',
           fn: function(item /*{File|FileLikeObject}*/, options) {
+              console.log(item);
               var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
               return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
           }

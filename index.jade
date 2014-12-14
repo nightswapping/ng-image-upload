@@ -1,5 +1,5 @@
 doctype
-html#ng-app(ng-app='app')
+html#ng-app(ng-app='uploads')
   // id="ng-app" IE<8
   head
     title Simple example
@@ -19,16 +19,16 @@ html#ng-app(ng-app='app')
       .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
       .another-file-over-class { border: dotted 3px green; }
       html, body { height: 100%; }
-  body(ng-controller='AppController', nv-file-drop='', uploader='uploader', filters='queueLimit, customFilter')
+  body(ng-controller='uploads.controllers', nv-file-drop='', uploader='uploader', filters='queueLimit, customFilter')
     .container(ng-switch='tokenStatus')
       .row(ng-switch-when='recieved')
         .col-md-3
           h3 Select files
           div(ng-show='uploader.isHTML5')
             // 3. nv-file-over uploader="link" over-class="className"
-            .well.my-drop-zone(nv-file-over='', uploader='uploader') Base drop zone
+            .well.my-drop-zone(nv-file-over='', uploader='uploader', filters='imageFilter') Base drop zone
           | Single
-          input(type='file', nv-file-select='', uploader='uploader')
+          input(type='file', nv-file-select='', uploader='uploader', filters='imageFilter')
         .col-md-9(style='margin-bottom: 40px')
           h2 Files
           div(ng-repeat='item in uploader.queue')
