@@ -1,23 +1,46 @@
 'use strict';
 
-
-angular
-  .module('app', ['angularFileUpload', 'ngStorage'])
-  .controller('AppController', [
+;(function(app) {
+  app.controller('uploads.controllers', [
     '$scope',
+    '$http',
     '$log',
     '$sessionStorage',
     'FileUploader',
-    function($scope, $log, $sessionStorage, FileUploader) {
+    function($scope, $http, $log, $sessionStorage, FileUploader) {
       $scope.$storage = $sessionStorage;
-      var isFileTooBig;
+      $scope.tokenStatus = 'missing';
+
+      var isFileTooBig,
+          token;
+
+      // Request token from server
+      // (Should probably use 'resolve' from ui-router
+      // to load this)
+      $http.get('token')
+        // If the token is successfully retrieved it will
+        // be added to the upload after a file has been added
+        .success(function(data) {
+          $scope.tokenStatus = 'recieved';
+          token = data;
+        })
+        // If no token has been found and error message
+        // is shown on the page and no file can be added
+        .error(function() {
+        })
 
       var uploader = $scope.uploader = new FileUploader({
-        url: 'upload.php'
+        // Url to hit for the post request
+        url: 'upload/',
+        // Only one picture should be uploaded
+        queueLimit: 1
       });
 
       // Add the img in session storage once added
       uploader.onAfterAddingFile = function(fileItem) {
+        // Updates the url with the recieved token
+        uploader.url = 'upload/' + token;
+
         $log.info('onAfterAddingFile', fileItem);
         // TODO: resize/crop the img before storing/upload
 
@@ -42,7 +65,6 @@ angular
       uploader.onBeforeUploadItem = function(fileItem) {
         // Parse the item stored in session storage
         // before the server upload
-
         if (!isFileTooBig)
           fileItem._file = dataURItoBlob($scope.$storage.reader.result);
       };
@@ -62,9 +84,13 @@ angular
         var binary = atob(dataURI.split(',')[1]);
         var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
         var array = [];
+
         for(var i = 0; i < binary.length; i++) {
           array.push(binary.charCodeAt(i));
         }
-        return new Blob([new Uint8Array(array)], { type: mimeString });
+
+        return new Blob([ new Uint8Array(array) ], { type: mimeString });
       };
     }]);
+
+})(angular.module('uploads.controllers', ['angularFileUpload', 'ngStorage']))

@@ -5,7 +5,7 @@
     "Arnaud Drizard <arnaud.drizard@gmail.com>"
   ],
   "description": "A module to handle img upload with resizing, caching and queueing",
-  "main": "app.js",
+  "main": "uploads.js",
   "moduleType": [
     "es6",
     "node"
