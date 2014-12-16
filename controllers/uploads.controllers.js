@@ -10,6 +10,8 @@
     function($scope, $http, $log, $sessionStorage, FileUploader) {
       $scope.$storage = $sessionStorage;
       $scope.tokenStatus = 'missing';
+      $scope.policy;
+      $scope.signature;
 
       var isFileTooBig,
           token;
@@ -23,6 +25,10 @@
           // be added to the upload after a file has been added
           $scope.tokenStatus = 'recieved';
           token = data;
+
+          // Define policy and signature for AWS upload
+          //$scope.policy = ...;
+          //$scope. signature = ...;
         })
         // If no token has been found an error message
         // is shown on the page and no file can be added
@@ -36,7 +42,8 @@
         // Only one picture should be uploaded
         queueLimit: 1,
         // Remove file from queue, hence on screen, after upload
-        removeAfterUpload: true
+        removeAfterUpload: true,
+        method: 'POST'
       });
 
       // Filters out the items that are not pictures
@@ -52,6 +59,17 @@
       uploader.onAfterAddingFile = function(fileItem) {
         // Updates the url with the recieved token
         uploader.url = 'upload?t=' + token;
+
+        // Amazon AWS S3 Upload
+        //uploader.data = {
+          //key: fileItem.name,
+          //AWSAcessKeyId: '<AWS AccessKey Id>',
+          //acl: 'private',
+          //policy: $scope.policy,
+          //signature: $scope.signature,
+          //'Content-Type': (fileItem.type !== '') ? fileItem.type : 'application/octet-stream',
+          //filemame: fileItem.name
+        //};
 
         $log.info('onAfterAddingFile', fileItem);
 
