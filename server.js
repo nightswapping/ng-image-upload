@@ -3,6 +3,7 @@ var morgan     = require('morgan')
 var app        = express()
 var bodyParser = require('body-parser')
 var multer     = require('multer')
+var secret     = require('./secret');
 
 app.use(multer({ dest: './uploads/',
   rename: function (fieldname, filename) {
@@ -20,7 +21,21 @@ app.get('/', function (req, res) {
 })
 
 app.get('/token', function (req, res) {
-  res.send('8f40f9c6afe7003aa3a2fdbbea54e062084056ba073ebab2ec67392c8b3f99bf')
+  var token = secret.token;
+  // The token has the following format (dummy data, do not use for production :) ):
+  //var token = {
+    //AWSKey : 'AKRllRIlRllRKKNSDFAS',
+    //policy:
+      //'efdsfKKKfdsffdsLLfdsff92fds23fsljfsdfsdfsdflfds00DBaIiwKICAiY29uZGl0aW9uc' +
+      //'yI6IFsKICAgIHsiYnVjasaq22ogImFuZ3VsYfdsfdsvYWQifSdsfdsfIFsic3RhcnRzLXdpdG' +
+      //'giLCAiJGtleSIsICIiXSwKICAfdLsiYWNsIjogInByaXZhdGUifSwKICAgIFsic3RhcnRzLXd' +
+      //'pdGgiLCAiJENvbnRlbnQtVHlwZSIfdaAiXSwKICAgIFsic3RhcnRzLXdpdGgiLCAiJGZpbGVu' +
+      //'YW1lf1wgIiJdLAogICAgWyJjb250ZW504Wxlbmd0aC1yYW5nZSIsIDAsIDUyNDI4ODAwMF0KI' +
+      //'CBdCfds',
+    //signature: 'SFDFDsaa0923rfdfdsfsdfuBq0c='
+  //}
+
+  res.send(token);
 })
 
 app.post('/upload', function (req, res) {

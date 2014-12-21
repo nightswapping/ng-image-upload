@@ -10,8 +10,11 @@
     function($scope, $http, $log, $sessionStorage, FileUploader) {
       $scope.$storage = $sessionStorage;
       $scope.tokenStatus = 'missing';
-      $scope.policy;
-      $scope.signature;
+
+      // Policy and Signature are part of the tokens for AWS Uploads
+      var AWSKey,
+          policy,
+          signature;
 
       var isFileTooBig,
           token;
@@ -27,18 +30,21 @@
           token = data;
 
           // Define policy and signature for AWS upload
-          //$scope.policy = ...;
-          //$scope. signature = ...;
+          AWSKey = data.AWSKey;
+          policy = data.policy;
+          signature = data.signature;
         })
         // If no token has been found an error message
         // is shown on the page and no file can be added
         .error(function() {
+          throw new Error('Couldn\nt retreive AWS credentials');
+
           $scope.tokenStatus = 'missing';
         })
 
       var uploader = $scope.uploader = new FileUploader({
         // Url to hit for the post request
-        url: 'upload/',
+        url: 'https://angularupload.s3.amazonaws.com/',
         // Only one picture should be uploaded
         queueLimit: 1,
         // Remove file from queue, hence on screen, after upload
@@ -52,26 +58,22 @@
         fn: function(item /*{File|FileLikeObject}*/, options) {
           var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
           return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+          // TODO: throw error to notice file extension
         }
       });
 
       // Add the img in session storage once added
       uploader.onAfterAddingFile = function(fileItem) {
-        // Updates the url with the recieved token
-        uploader.url = 'upload?t=' + token;
-
-        // Amazon AWS S3 Upload
-        //uploader.data = {
-          //key: fileItem.name,
-          //AWSAcessKeyId: '<AWS AccessKey Id>',
-          //acl: 'private',
-          //policy: $scope.policy,
-          //signature: $scope.signature,
-          //'Content-Type': (fileItem.type !== '') ? fileItem.type : 'application/octet-stream',
-          //filemame: fileItem.name
-        //};
-
-        $log.info('onAfterAddingFile', fileItem);
+        // Updates the formData for Amazon AWS S3 Upload
+        fileItem.formData.push({
+          key:  fileItem.file.name,
+          AWSAccessKeyId: AWSKey,
+          acl: 'private',
+          'Content-Type': (fileItem.file.type !== '') ? fileItem.file.type : 'application/octet-stream',
+          filename: fileItem.file.name,
+          policy: policy,
+          signature: signature
+        });
 
         // Check the img can fit into the session storage
         isFileTooBig = fileItem.file.size > 5000000;
@@ -118,8 +120,6 @@
             var width = this.width / this.height * maxHeight;
           }
 
-          // TODO: check the images now fits the limits
-
           canvas.width = width;
           canvas.height = height;
 
@@ -161,6 +161,7 @@
 
         return new Blob([ new Uint8Array(array) ], { type: mimeString });
       };
+
     }]);
 
 })(angular.module('uploads.controllers', ['angularFileUpload', 'ngStorage']))
