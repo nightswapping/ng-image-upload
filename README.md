@@ -66,8 +66,8 @@ Before using the directive, you need to create and configure an Amazon S3 bucket
 The directive will make a GET Request to your server on the URL you provided it with. You must provide the following items on responde:
 ```json
 {
-    AWSKey : <YOUR AWS PUBLIC KEY>,
-    policy: <YOUR BASE-64 ENCODED POLICY>
-    signature: <YOUR BASE-64 ENCODED HMAC-SHA1 SIGNATURE>
+    "AWSKey" : "<YOUR AWS PUBLIC KEY>",
+    "policy": "<YOUR BASE-64 ENCODED POLICY>",
+    "signature": "<YOUR BASE-64 ENCODED HMAC-SHA1 SIGNATURE>"
 }
 ```
