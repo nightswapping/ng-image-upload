@@ -27,8 +27,7 @@
         .success(function(data) {
           // If the token is successfully retrieved it will
           // be added to the upload after a file has been added
-          $scope.tokenStatus = 'recieved';
-          token = data;
+          $scope.tokenStatus = 'received';
 
           // Define policy and signature for AWS upload
           AWSKey = data.AWSKey;

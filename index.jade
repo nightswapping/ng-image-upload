@@ -21,7 +21,7 @@ html#ng-app(ng-app='uploads')
       html, body { height: 100%; }
   body(ng-controller='uploads.controllers', nv-file-drop='', uploader='uploader')
     .container(ng-switch='tokenStatus')
-      .row(ng-switch-when='recieved')
+      .row(ng-switch-when='received')
         .col-md-3
           h3 Select files
           div(ng-show='uploader.isHTML5')
