@@ -101,37 +101,10 @@
         // Wait for the reader to be loaded to get the right img.src
         function onLoad(event) {
           var img = new Image();
-          img.onload = getDimensions;
+          img.onload = utils.getDimensions(canvas, $scope.$storage);
           img.src = event.target.result;
         }
 
-        // Triggered when the image is loaded to resize if necessary
-        function getDimensions() {
-          var maxHeight = 1600;
-          var maxWidth = 2000;
-          var quality = 1;
-          var type = 'image/jpg';
-
-          if (this.width > maxWidth) {
-            var width = maxWidth;
-            var height = this.height / this.width * maxWidth;
-          }
-
-          if (this.height > maxHeight) {
-            var height = maxHeight;
-            var width = this.width / this.height * maxHeight;
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-
-          // Draw image on canvas
-          var ctx = canvas.getContext("2d");
-          ctx.drawImage(this, 0, 0, width, height);
-
-          // Stores the img in session storage
-          $scope.$storage.reader = canvas.toDataURL(type, quality);
-        }
       };
 
       uploader.onBeforeUploadItem = function(fileItem) {

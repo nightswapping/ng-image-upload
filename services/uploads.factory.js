@@ -29,6 +29,36 @@
         }
 
         return new Blob([ new Uint8Array(array) ], { type: mimeString });
+      },
+
+      getDimensions: function(canvas, sessionStorage) {
+        // Triggered when the image is loaded to resize if necessary
+        return function() {
+          var maxHeight = 1600;
+          var maxWidth = 2000;
+          var quality = 1;
+          var type = 'image/jpg';
+
+          if (this.width > maxWidth) {
+            var width = maxWidth;
+            var height = this.height / this.width * maxWidth;
+          }
+
+          if (this.height > maxHeight) {
+            var height = maxHeight;
+            var width = this.width / this.height * maxHeight;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          // Draw image on canvas
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(this, 0, 0, width, height);
+
+          // Stores the img in session storage
+          sessionStorage.reader = canvas.toDataURL(type, quality);
+        };
       }
     }
   }])
