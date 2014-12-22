@@ -10,8 +10,10 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/ngstorage/ngStorage.js"></script>
     <script src="bower_components/angular-file-upload/angular-file-upload.js"></script>
+    <script src="templates.js"></script>
     <script src="controllers/uploads.controllers.js"></script>
     <script src="services/uploads.factory.js"></script>
+    <script src="directives/ngthumb.directives.js"></script>
     <script src="directives/uploads.directives.js"></script>
     <script src="uploads.js"></script>
     <style>
@@ -21,33 +23,7 @@
       html, body { height: 100%; }
     </style>
   </head>
-  <body ng-controller="uploads.controllers" nv-file-drop="" uploader="uploader">
-    <div ng-switch="tokenStatus" class="container">
-      <div ng-switch-when="received" class="row">
-        <div class="col-md-3">
-          <h3>Select files</h3>
-          <div ng-show="uploader.isHTML5">
-            <div nv-file-over="" uploader="uploader" class="well my-drop-zone">Base drop zone</div>
-          </div>Single
-          <input type="file" nv-file-select="" uploader="uploader">
-        </div>
-        <div style="margin-bottom: 40px" class="col-md-9">
-          <h2>Files</h2>
-          <div ng-repeat="item in uploader.queue">
-            <div ng-show="uploader.isHTML5" ng-thumb="{ file: item._file, height: 100 }"></div><strong>{{ item.file.name }}</strong>
-            <p ng-show="uploader.isHTML5" nowrap="" style="display: inline-block">{{ item.file.size/1024/1024|number:2 }} MB</p>
-          </div>
-          <div>
-            <button type="button" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length" class="btn btn-success btn-s">Upload picture</button>
-            <button type="button" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length" class="btn btn-danger btn-s">Remove picture</button>
-          </div>
-        </div>
-      </div>
-      <div ng-switch-when="missing" class="row">
-        <div class="col-md-12">
-          <h1>No token has been recieved</h1>
-        </div>
-      </div>
-    </div>
+  <body>
+    <img-upload></img-upload>
   </body>
 </html>

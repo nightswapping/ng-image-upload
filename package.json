@@ -7,7 +7,8 @@
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-contrib-qunit": "^0.5.2",
-    "grunt-contrib-jade": "^0.13.0"
+    "grunt-contrib-jade": "^0.13.0",
+    "grunt-html2js": "^0.2.9"
   },
   "dependencies": {
     "express": "^4.10.4",

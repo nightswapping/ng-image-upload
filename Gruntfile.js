@@ -42,10 +42,19 @@ module.exports = function(grunt) {
         }
       }
     },
+    html2js: {
+      options: {
+        module: 'uploads.templates'
+      },
+      main: {
+        src: ['templates/*.tpl.jade'],
+        dest: './templates.js'
+      },
+    },
     watch: {
       gruntfile: {
-        files: 'index.jade',
-        tasks: ['jade']
+        files: ['index.jade', 'templates/**'],
+        tasks: ['jade', 'html2js']
       }
     }
   });
@@ -55,6 +64,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jade');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-html2js');
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'qunit']);
