@@ -71,6 +71,7 @@ The directive will make a GET Request to your server on the URL you provided it 
 {
     "AWSKey" : "<YOUR AWS PUBLIC KEY>",
     "policy": "<YOUR BASE-64 ENCODED POLICY>",
-    "signature": "<YOUR BASE-64 ENCODED HMAC-SHA1 SIGNATURE>"
+    "signature": "<YOUR BASE-64 ENCODED HMAC-SHA1 SIGNATURE>",
+    "url": "https://<YOUR BUCKET NAME>.s3.amazonaws.com/"
 }
 ```
