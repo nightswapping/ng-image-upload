@@ -75,3 +75,21 @@ The directive will make a GET Request to your server on the URL you provided it 
     "url": "https://<YOUR BUCKET NAME>.s3.amazonaws.com/"
 }
 ```
+
+### Directive definition
+
+#### Calling the directive
+
+The directive is defined as an element only directive:
+
+```html
+    <img-upload></img-upload>
+```
+
+#### Token-url
+
+TokenUrl is the url on which the directive will issue a POST request to get the AWSKey, policy, signature and url specified earlier. Just pass it like this:
+
+```html
+    <img-upload token-url="&quot;token&quot;"></img-upload>
+```
