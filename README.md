@@ -55,8 +55,7 @@ Before using the directive, you need to create and configure an Amazon S3 bucket
           ]
         }
     ```
-    Once edited, base64-encode the policy. Amazon provides some examples in Ruby, Java and Python:
-    http://aws.amazon.com/articles/1434/
+    Once edited, base64-encode the policy.
 
 4. Create a signature
 
@@ -67,7 +66,7 @@ Before using the directive, you need to create and configure an Amazon S3 bucket
 
 5. Provide the signature to the directives
 
-The directive will make a GET Request to your server on the URL you provided it with. You must provide the following items on responde:
+The directive will make a GET Request to your server on the URL you provided it with. You must provide the following items on response:
 ```json
 {
     "AWSKey" : "<YOUR AWS PUBLIC KEY>",
