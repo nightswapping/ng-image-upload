@@ -37,7 +37,7 @@
         // If no token has been found an error message
         // is shown on the page and no file can be added
         .error(function() {
-          throw new Error('Couldn\nt retreive AWS credentials');
+          throw new Error('Couldn\'t retreive AWS credentials');
 
           $scope.tokenStatus = 'missing';
         })
@@ -104,7 +104,6 @@
           img.onload = utils.getDimensions(canvas, $scope.$storage);
           img.src = event.target.result;
         }
-
       };
 
       uploader.onBeforeUploadItem = function(fileItem) {
