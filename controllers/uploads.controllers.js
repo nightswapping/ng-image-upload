@@ -6,8 +6,9 @@
     '$http',
     '$log',
     '$sessionStorage',
+    'uploadsUtils',
     'FileUploader',
-    function($scope, $http, $log, $sessionStorage, FileUploader) {
+    function($scope, $http, $log, $sessionStorage, utils, FileUploader) {
       $scope.$storage = $sessionStorage;
       $scope.tokenStatus = 'missing';
 
@@ -138,7 +139,7 @@
         // Parse the item stored in session storage
         // before the server upload
         if (!isFileTooBig)
-          fileItem._file = dataURItoBlob($scope.$storage.reader);
+          fileItem._file = utils.dataURItoBlob($scope.$storage.reader);
       };
 
       uploader.onCompleteItem = function(fileItem, response, status, headers) {
@@ -149,21 +150,6 @@
       uploader.onErrorItem = function(fileItem, response, status, headers) {
         // TODO: try to reupload the img
       };
-
-      // Turns the Data URI into a blob so it
-      // can be sent over to the server
-      var dataURItoBlob = function(dataURI) {
-        var binary = atob(dataURI.split(',')[1]);
-        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-        var array = [];
-
-        for(var i = 0; i < binary.length; i++) {
-          array.push(binary.charCodeAt(i));
-        }
-
-        return new Blob([ new Uint8Array(array) ], { type: mimeString });
-      };
-
     }]);
 
 })(angular.module('uploads.controllers', ['angularFileUpload', 'ngStorage']))
