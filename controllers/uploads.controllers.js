@@ -15,7 +15,8 @@
       // Policy and Signature are part of the tokens for AWS Uploads
       var AWSKey,
           policy,
-          signature;
+          signature
+          url;
 
       var isFileTooBig,
           token;
@@ -30,9 +31,10 @@
           $scope.tokenStatus = 'received';
 
           // Define policy and signature for AWS upload
-          AWSKey = data.AWSKey;
-          policy = data.policy;
+          AWSKey    = data.AWSKey;
+          policy    = data.policy;
           signature = data.signature;
+          url       = data.url;
         })
         // If no token has been found an error message
         // is shown on the page and no file can be added
@@ -44,7 +46,7 @@
 
       var uploader = $scope.uploader = new FileUploader({
         // Url to hit for the post request
-        url: 'https://angularupload.s3.amazonaws.com/',
+        url: url,
         // Only one picture should be uploaded
         queueLimit: 1,
         // Remove file from queue, hence on screen, after upload
