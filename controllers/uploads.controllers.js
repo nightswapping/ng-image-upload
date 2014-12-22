@@ -15,7 +15,7 @@
       // Policy and Signature are part of the tokens for AWS Uploads
       var AWSKey,
           policy,
-          signature
+          signature,
           url;
 
       var isFileTooBig,
@@ -24,7 +24,7 @@
       // Request token from server
       // (Should probably use 'resolve' from ui-router
       // to load this)
-      $http.get('token')
+      $http.get($scope.tokenUrl)
         .success(function(data) {
           // If the token is successfully retrieved it will
           // be added to the upload after a file has been added
@@ -68,6 +68,7 @@
 
       // Add the img in session storage once added
       uploader.onAfterAddingFile = function(fileItem) {
+        uploader.url = url;
         // Updates the formData for Amazon AWS S3 Upload
         fileItem.formData.push({
           key:  fileItem.file.name,
