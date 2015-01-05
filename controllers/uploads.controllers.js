@@ -1,18 +1,13 @@
 'use strict';
 
 ;(function(app) {
-  app
-  .config(['tokenProvider', function(tokenProvider) {
+
+  app.config(['tokenProvider', function(tokenProvider) {
     tokenProvider.setUrl('token')
-  }])
-  .controller('uploads.controllers', [
-    '$scope',
-    '$http',
-    '$log',
-    '$sessionStorage',
-    'token',
-    'uploadsUtils',
-    'FileUploader',
+  }]);
+
+  app.controller('uploads.controllers',
+    ['$scope', '$http', '$log', '$sessionStorage', 'token', 'uploadsUtils', 'FileUploader',
     function($scope, $http, $log, $sessionStorage, _token, utils, FileUploader) {
       $scope.$storage = $sessionStorage;
       $scope.tokenStatus = 'missing';
