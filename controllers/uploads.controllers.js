@@ -1,14 +1,19 @@
 'use strict';
 
 ;(function(app) {
-  app.controller('uploads.controllers', [
+  app
+  .config(['tokenProvider', function(tokenProvider) {
+    tokenProvider.setUrl('token')
+  }])
+  .controller('uploads.controllers', [
     '$scope',
     '$http',
     '$log',
     '$sessionStorage',
+    'token',
     'uploadsUtils',
     'FileUploader',
-    function($scope, $http, $log, $sessionStorage, utils, FileUploader) {
+    function($scope, $http, $log, $sessionStorage, token, utils, FileUploader) {
       $scope.$storage = $sessionStorage;
       $scope.tokenStatus = 'missing';
 
@@ -18,31 +23,19 @@
           signature,
           url;
 
-      var isFileTooBig,
-          token;
+      var isFileTooBig;
 
-      // Request token from server
-      // (Should probably use 'resolve' from ui-router
-      // to load this)
-      $http.get($scope.tokenUrl)
-        .success(function(data) {
-          // If the token is successfully retrieved it will
-          // be added to the upload after a file has been added
-          $scope.tokenStatus = 'received';
-
-          // Define policy and signature for AWS upload
-          AWSKey    = data.AWSKey;
-          policy    = data.policy;
-          signature = data.signature;
-          url       = data.url;
-        })
-        // If no token has been found an error message
-        // is shown on the page and no file can be added
-        .error(function() {
-          throw new Error('Couldn\'t retreive AWS credentials');
-
-          $scope.tokenStatus = 'missing';
-        })
+      token.success(function(data) {
+        $scope.tokenStatus = 'received'
+        // Define policy and signature for AWS upload
+        AWSKey    = data.AWSKey;
+        policy    = data.policy;
+        signature = data.signature;
+        url       = data.url;
+      })
+      .error(function() {
+        throw new Error('Couldn\'t retreive AWS credentials');
+      })
 
       var uploader = $scope.uploader = new FileUploader({
         // Url to hit for the post request
@@ -126,4 +119,4 @@
       };
     }]);
 
-})(angular.module('uploads.controllers', ['angularFileUpload', 'ngStorage']))
+})(angular.module('uploads.controllers', ['token', 'angularFileUpload', 'ngStorage']))
