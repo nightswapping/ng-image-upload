@@ -7,17 +7,20 @@
       scope: {
         queueLimit: '=',
         removeAfterUpload: '=',
-        method: '='
+        method: '=',
+        onUploadFinished: '='
       },
       templateUrl: '../templates/imgupload.tpl.jade',
       controller: 'uploads.controllers',
       link: function(scope, element, attributes) {
 
+        var onUploadFinished = scope.onUploadFinished || function() {}
+
+        scope.uploader.method = scope.method || 'POST';
         // Only one picture should be uploaded
         scope.uploader.queueLimit = scope.queueLimit || 1;
         // Remove file from queue, hence on screen, after upload
-        scope.uploader.removeAfterUpload = scope.removeAfterUpload || true;
-        scope.uploader.method = scope.method || 'POST';
+        scope.uploader.removeAfterUpload = attributes.hasOwnProperty('removeAfterUpload');
 
         // Filters out the items that are not pictures
         scope.uploader.filters.push({
@@ -30,6 +33,18 @@
             return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
           }
         });
+
+        scope.uploader.onCompleteItem = function(fileItem, response, status, headers) {
+          // Empty the session storage once the item has been uploaded
+          delete scope.$storage.reader;
+
+          onUploadFinished(null);
+        };
+
+        scope.uploader.onErrorItem = function(fileItem, response, status, headers) {
+          var err = new Error('Couldn\'t not upload the picture')
+          onUploadFinished(err)
+        };
       }
     };
   }]);

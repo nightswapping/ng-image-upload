@@ -8,7 +8,7 @@
 
   app.controller('uploads.controllers',
     ['$scope', '$http', '$log', '$sessionStorage', 'token', 'uploadsUtils', 'FileUploader',
-    function($scope, $http, $log, $sessionStorage, _token, utils, FileUploader) {
+    function($scope, $http, $log, $sessionStorage, fetchToken, utils, FileUploader) {
       $scope.$storage = $sessionStorage;
       $scope.tokenStatus = 'missing';
 
@@ -19,7 +19,7 @@
 
       var uploader = $scope.uploader = new FileUploader();
 
-      _token.success(function(data) {
+      fetchToken.success(function(data) {
         $scope.tokenStatus = 'received'
         // Define policy and signature for AWS upload
         token = data;
@@ -77,15 +77,6 @@
         // before the server upload
         if (!isFileTooBig)
           fileItem._file = utils.dataURItoBlob($scope.$storage.reader);
-      };
-
-      uploader.onCompleteItem = function(fileItem, response, status, headers) {
-        // Empty the session storage once the item has been uploaded
-        delete $scope.$storage.reader;
-      };
-
-      uploader.onErrorItem = function(fileItem, response, status, headers) {
-        throw new Error('Couldn\'t not upload the picture')
       };
     }]);
 
