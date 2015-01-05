@@ -32,6 +32,9 @@
         policy    = data.policy;
         signature = data.signature;
         url       = data.url;
+
+        // Updates the uploader url to issue the POST request
+        uploader.url = url;
       })
       .error(function() {
         throw new Error('Couldn\'t retreive AWS credentials');
@@ -61,7 +64,6 @@
 
       // Add the img in session storage once added
       uploader.onAfterAddingFile = function(fileItem) {
-        uploader.url = url;
         // Updates the formData for Amazon AWS S3 Upload
         fileItem.formData.push({
           key:  fileItem.file.name,
