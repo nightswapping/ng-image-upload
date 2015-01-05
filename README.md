@@ -61,8 +61,10 @@ Before using the directive, you need to create and configure an Amazon S3 bucket
 
     Get your AWS Credentials from the AWS console (id + secret key). Then create an SHA-1 HMAC from your policy using your secret Key.
 
- Amazon provides some examples in Ruby, Java and Python:
+    Amazon provides some examples in Ruby, Java and Python:
     http://aws.amazon.com/articles/1434/
+
+    Note that for data-centers located in Frankfurt, you need a SHA-256 HMAC and not a SHA-1
 
 5. Provide the signature to the directives
 
@@ -71,7 +73,7 @@ The directive will make a GET Request to your server on the URL you provided it 
 {
     "AWSKey" : "<YOUR AWS PUBLIC KEY>",
     "policy": "<YOUR BASE-64 ENCODED POLICY>",
-    "signature": "<YOUR BASE-64 ENCODED HMAC-SHA1 SIGNATURE>",
+    "signature": "<YOUR BASE-64 ENCODED HMAC-SHA1 SIGNATURE>", // HMAC-SHA-256 for Frankfurt
     "url": "https://<YOUR BUCKET NAME>.s3.amazonaws.com/"
 }
 ```
@@ -80,16 +82,18 @@ The directive will make a GET Request to your server on the URL you provided it 
 
 #### Calling the directive
 
-The directive is defined as an element only directive:
+The directive is defined as a simple element directive:
 
 ```html
     <img-upload></img-upload>
 ```
 
-#### Token-url
+#### Pass the token Url
 
-TokenUrl is the url on which the directive will issue a POST request to get the AWSKey, policy, signature and url specified earlier. Just pass it like this:
+The token Url is the url on which the directive will issue a GET request to get the AWSKey, policy, signature and url specified earlier. To pass it to the directive, configure the token provider as follows:
 
-```html
-    <img-upload token-url="&quot;token&quot;"></img-upload>
+```javascript
+  .config(['tokenProvider', function(tokenProvider) {
+    tokenProvider.setUrl('token')
+  }])
 ```
