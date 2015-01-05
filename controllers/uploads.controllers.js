@@ -13,66 +13,41 @@
     'token',
     'uploadsUtils',
     'FileUploader',
-    function($scope, $http, $log, $sessionStorage, token, utils, FileUploader) {
+    function($scope, $http, $log, $sessionStorage, _token, utils, FileUploader) {
       $scope.$storage = $sessionStorage;
       $scope.tokenStatus = 'missing';
 
-      // Policy and Signature are part of the tokens for AWS Uploads
-      var AWSKey,
-          policy,
-          signature,
-          url;
+      // token should be a JSON object containing the Policy and Signature
+      // which are part of the tokens for AWS Uploads
+      var token,
+          isFileTooBig;
 
-      var isFileTooBig;
+      var uploader = $scope.uploader = new FileUploader();
 
-      token.success(function(data) {
+
+      _token.success(function(data) {
         $scope.tokenStatus = 'received'
         // Define policy and signature for AWS upload
-        AWSKey    = data.AWSKey;
-        policy    = data.policy;
-        signature = data.signature;
-        url       = data.url;
+        token = data;
 
-        // Updates the uploader url to issue the POST request
-        uploader.url = url;
+        // Url to hit for the post request
+        uploader.url = token.url;
       })
       .error(function() {
         throw new Error('Couldn\'t retreive AWS credentials');
       })
-
-      var uploader = $scope.uploader = new FileUploader({
-        // Url to hit for the post request
-        url: url,
-        // Only one picture should be uploaded
-        queueLimit: 1,
-        // Remove file from queue, hence on screen, after upload
-        removeAfterUpload: true,
-        method: 'POST'
-      });
-
-      // Filters out the items that are not pictures
-      uploader.filters.push({
-        name: 'imageFilter',
-        fn: function(item /*{File|FileLikeObject}*/, options) {
-          var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
-          if ('|jpg|png|jpeg|bmp|gif|'.indexOf(type) === -1)
-            throw new Error('File extension not supported (' + type + ')');
-
-          return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
-        }
-      });
 
       // Add the img in session storage once added
       uploader.onAfterAddingFile = function(fileItem) {
         // Updates the formData for Amazon AWS S3 Upload
         fileItem.formData.push({
           key:  fileItem.file.name,
-          AWSAccessKeyId: AWSKey,
+          AWSAccessKeyId: token.AWSKey,
           acl: 'private',
           'Content-Type': (fileItem.file.type !== '') ? fileItem.file.type : 'application/octet-stream',
           filename: fileItem.file.name,
-          policy: policy,
-          signature: signature
+          policy: token.policy,
+          signature: token.signature
         });
 
         // Check the img can fit into the session storage

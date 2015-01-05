@@ -23,4 +23,4 @@ html#ng-app(ng-app='uploads')
       .another-file-over-class { border: dotted 3px green; }
       html, body { height: 100%; }
   body
-    img-upload(token-url='"token"')
+    img-upload(queue-limit='1', remove-after-upload='true', method='"POST"')
