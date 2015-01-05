@@ -1,9 +1,8 @@
-'use strict';
-
 ;(function(app) {
+  'use strict';
 
   app.config(['tokenProvider', function(tokenProvider) {
-    tokenProvider.setUrl('token')
+    tokenProvider.setUrl('token');
   }]);
 
   app.controller('uploads.controllers',
@@ -20,7 +19,7 @@
       var uploader = $scope.uploader = new FileUploader();
 
       fetchToken.success(function(data) {
-        $scope.tokenStatus = 'received'
+        $scope.tokenStatus = 'received';
         // Define policy and signature for AWS upload
         token = data;
 
@@ -29,7 +28,7 @@
       })
       .error(function() {
         throw new Error('Couldn\'t retreive AWS credentials');
-      })
+      });
 
       // Add the img in session storage once added
       uploader.onAfterAddingFile = function(fileItem) {
@@ -54,8 +53,8 @@
         try {
           $scope.$storage.reader = reader;
         } catch(e) {
-          throw new Error(e);
           isFileTooBig = true;
+          throw new Error(e);
         }
 
         // To resize the picture we need a hidden canvas
@@ -75,9 +74,10 @@
       uploader.onBeforeUploadItem = function(fileItem) {
         // Parse the item stored in session storage
         // before the server upload
-        if (!isFileTooBig)
+        if (!isFileTooBig) {
           fileItem._file = utils.dataURItoBlob($scope.$storage.reader);
+        }
       };
     }]);
 
-})(angular.module('uploads.controllers', ['token', 'angularFileUpload', 'ngStorage']))
+})(angular.module('uploads.controllers', ['token', 'angularFileUpload', 'ngStorage']));

@@ -1,6 +1,5 @@
-'use strict';
-
 ;(function(app) {
+  'use strict';
   // The ngThumb directive adds a picture thumbnail to the page
   // Please note that it only works for browsers supporting the
   // HTML5 FileReader API and the Canvas objects
@@ -36,13 +35,14 @@
         }
 
         function onLoadImage() {
-          var width = params.width || this.width / this.height * params.height;
-          var height = params.height || this.height / this.width * params.width;
+          var self = this;
+          var width = params.width || self.width / self.height * params.height;
+          var height = params.height || self.height / self.width * params.width;
 
           canvas.attr({ width: width, height: height });
-          canvas[0].getContext('2d').drawImage(this, 0, 0, width, height);
+          canvas[0].getContext('2d').drawImage(self, 0, 0, width, height);
         }
       }
     };
   }]);
-})(angular.module('ngthumb.directives', []))
+})(angular.module('ngthumb.directives', []));

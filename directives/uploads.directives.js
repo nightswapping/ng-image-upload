@@ -1,6 +1,6 @@
-'use strict';
-
 ;(function(app) {
+  'use strict';
+
   app.directive('imgUpload', ['uploadsUtils', function(uploadsUtils) {
     return {
       restrict: 'E',
@@ -16,7 +16,7 @@
 
         // onUploadFinished is called when the uplad is done
         // an error is passed as args if an error happened
-        var onUploadFinished = scope.onUploadFinished || function() {}
+        var onUploadFinished = scope.onUploadFinished || function() {};
 
         scope.uploader.method = scope.method || 'POST';
         // Only one picture should be uploaded
@@ -30,8 +30,9 @@
             name: 'imageFilter',
             fn: function(item /*{File|FileLikeObject}*/, options) {
               var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
-              if ('|jpg|png|jpeg|bmp|gif|'.indexOf(type) === -1)
+              if ('|jpg|png|jpeg|bmp|gif|'.indexOf(type) === -1) {
                 throw new Error('File extension not supported (' + type + ')');
+              }
 
               return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
             }
@@ -46,10 +47,10 @@
         };
 
         scope.uploader.onErrorItem = function(fileItem, response, status, headers) {
-          var err = new Error('Couldn\'t not upload the picture')
-          onUploadFinished(err)
+          var err = new Error('Couldn\'t not upload the picture');
+          onUploadFinished(err);
         };
       }
     };
   }]);
-})(angular.module('uploads.directives', ['uploads.controllers']))
+})(angular.module('uploads.directives', ['uploads.controllers']));

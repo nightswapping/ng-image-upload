@@ -16,9 +16,9 @@
         }
 
         // Request token from server
-        return $http.get(url)
+        return $http.get(url);
       }
-    }
+    };
   });
 
 })(angular.module('token', []));

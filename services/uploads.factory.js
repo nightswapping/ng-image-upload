@@ -1,6 +1,6 @@
-'use strict';
-
 ;(function(app) {
+  'use strict';
+
   app.factory('uploadsUtils', ['$window', function($window) {
     return {
       // Checks if Browser supports the HTML5 FileReader API and Canvas objects
@@ -38,15 +38,17 @@
           var maxWidth = 2000;
           var quality = 1;
           var type = 'image/jpg';
+          var height;
+          var width;
 
           if (this.width > maxWidth) {
-            var width = maxWidth;
-            var height = this.height / this.width * maxWidth;
+            width = maxWidth;
+            height = this.height / this.width * maxWidth;
           }
 
           if (this.height > maxHeight) {
-            var height = maxHeight;
-            var width = this.width / this.height * maxHeight;
+            height = maxHeight;
+            width = this.width / this.height * maxHeight;
           }
 
           canvas.width = width;
@@ -60,6 +62,6 @@
           sessionStorage.reader = canvas.toDataURL(type, quality);
         };
       }
-    }
-  }])
-})(angular.module('uploads.factories', []))
+    };
+  }]);
+})(angular.module('uploads.factories', []));

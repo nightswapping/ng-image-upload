@@ -5,28 +5,25 @@ module.exports = function(grunt) {
   grunt.initConfig({
     // Task configuration.
     jshint: {
+      all: [
+        'uploads.js',
+        'directives/**/*.js',
+        'controllers/**/*.js',
+        'services/**/*.js'
+      ],
       options: {
         curly: true,
-        eqeqeq: true,
         immed: true,
-        latedef: true,
         newcap: true,
         noarg: true,
         sub: true,
-        undef: true,
-        unused: true,
         boss: true,
         eqnull: true,
-        browser: true,
-        globals: {
-          jQuery: true
-        }
+        validthis: true,
+        strict: true
       },
-      gruntfile: {
-        src: 'Gruntfile.js'
-      },
-      lib_test: {
-        src: ['lib/**/*.js', 'test/**/*.js']
+      globals: {
+        'angular': true
       }
     },
     qunit: {
