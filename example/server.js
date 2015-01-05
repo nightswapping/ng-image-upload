@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan(':remote-addr :method :url :status :res[content-length] :response-time ms'))
 app.use(express.static(__dirname));
+app.use(express.static(__dirname + '/..'));
 
 
 app.get('/', function (req, res) {

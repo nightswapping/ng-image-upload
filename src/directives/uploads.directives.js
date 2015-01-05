@@ -10,7 +10,7 @@
         method: '=',
         onUploadFinished: '='
       },
-      templateUrl: '../templates/imgupload.tpl.jade',
+      templateUrl: 'templates/imgupload.tpl.jade',
       controller: 'uploads.controllers',
       link: function(scope, element, attributes) {
 

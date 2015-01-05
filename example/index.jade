@@ -4,22 +4,19 @@ html#ng-app(ng-app='uploads')
   head
     title Simple example
     link(rel='stylesheet', href='http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css')
-    // Fix for old browsers
-    script(src='http://code.jquery.com/jquery-1.8.3.min.js')
-    script(src='http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
     script(src='bower_components/angular/angular.js')
     script(src='bower_components/ngstorage/ngStorage.js')
     script(src='bower_components/angular-file-upload/angular-file-upload.js')
-    script(src='templates.js')
-    script(src='services/uploads.provider.js')
-    script(src='controllers/uploads.controllers.js')
-    script(src='services/uploads.factory.js')
-    script(src='directives/ngthumb.directives.js')
-    script(src='directives/uploads.directives.js')
-    script(src='uploads.js')
+    script(src='dist/templates.js')
+    script(src='src/services/uploads.provider.js')
+    script(src='src/controllers/uploads.controllers.js')
+    script(src='src/services/uploads.factory.js')
+    script(src='src/directives/ngthumb.directives.js')
+    script(src='src/directives/uploads.directives.js')
+    script(src='src/uploads.js')
     style.
       .my-drop-zone { border: dotted 3px lightgray; }
-      .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+      .nv-file-over { border: dotted 3px red; }
       .another-file-over-class { border: dotted 3px green; }
       html, body { height: 100%; }
   body

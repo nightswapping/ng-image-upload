@@ -26,16 +26,13 @@ module.exports = function(grunt) {
         'angular': true
       }
     },
-    qunit: {
-      files: ['test/**/*.html']
-    },
     jade: {
       compile: {
         options: {
           pretty: true
         },
         files: {
-          "index.html": "index.jade"
+          'example/index.html': 'example/index.jade'
         }
       }
     },
@@ -44,23 +41,40 @@ module.exports = function(grunt) {
         module: 'uploads.templates'
       },
       main: {
-        src: ['templates/*.tpl.jade'],
-        dest: './templates.js'
+        src: ['src/templates/*.tpl.jade'],
+        dest: 'dist/templates.js'
+      },
+    },
+    concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: [
+          'dist/templates.js',
+          'src/services/uploads.provider.js',
+          'src/controllers/uploads.controllers.js',
+          'src/services/uploads.factory.js',
+          'src/directives/ngthumb.directives.js',
+          'src/directives/uploads.directives.js',
+          'src/uploads.js'
+        ],
+        dest: 'dist/ng-img-upload.js',
       },
     },
     watch: {
       gruntfile: {
-        files: ['index.jade', 'templates/**'],
+        files: ['example/index.jade', 'src/templates/**'],
         tasks: ['jade', 'html2js']
       }
     }
   });
 
   // These plugins provide necessary tasks.
-  grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-jade');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-html2js');
 
   // Default task.

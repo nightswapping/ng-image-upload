@@ -2,3 +2,4 @@ node_modules
 bower_components
 uploads/*.jpg
 secret.js
+dist/templates.js
