@@ -30,7 +30,6 @@
             return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
           }
         });
-
       }
     };
   }]);

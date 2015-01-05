@@ -24,7 +24,6 @@
 
       var uploader = $scope.uploader = new FileUploader();
 
-
       _token.success(function(data) {
         $scope.tokenStatus = 'received'
         // Define policy and signature for AWS upload
@@ -50,11 +49,6 @@
           signature: token.signature
         });
 
-        // Check the img can fit into the session storage
-        isFileTooBig = fileItem.file.size > 5000000;
-
-        // TODO: check once the picture has been resized
-        // rather than here
         if (isFileTooBig)
           return;
 
@@ -64,6 +58,13 @@
         // be stored in the session storage
         reader.readAsDataURL(fileItem._file);
         reader.onload = onLoad;
+
+        try {
+          $scope.$storage.reader = reader;
+        } catch(e) {
+          throw new Error(e);
+          isFileTooBig = true;
+        }
 
         // To resize the picture we need a hidden canvas
         // to draw a new pic with the expected dimensions
