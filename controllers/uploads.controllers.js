@@ -44,9 +44,6 @@
           signature: token.signature
         });
 
-        if (isFileTooBig)
-          return;
-
         var reader = new FileReader();
 
         // Turns img into a dataUrl so it can
@@ -88,7 +85,7 @@
       };
 
       uploader.onErrorItem = function(fileItem, response, status, headers) {
-        // TODO: try to reupload the img
+        throw new Error('Couldn\'t not upload the picture')
       };
     }]);
 
