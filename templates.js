@@ -26,7 +26,7 @@ angular.module("../templates/imgupload.tpl.jade", []).run(["$templateCache", fun
     "    </div>\n" +
     "    <div ng-switch-when=\"missing\" class=\"row\">\n" +
     "      <div class=\"col-md-12\">\n" +
-    "        <h1>No token has been recieved</h1>\n" +
+    "        <h1>No token has been received</h1>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +

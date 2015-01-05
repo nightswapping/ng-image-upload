@@ -88,7 +88,43 @@ The directive is defined as a simple element directive:
     <img-upload></img-upload>
 ```
 
-#### Pass the token Url
+#### queueLimit (optional, default 1)
+
+Number of picture which can be uploaded
+
+```html
+    <img-upload queue-limit='10'></img-upload>
+```
+
+#### method (optional, default 'POST')
+
+Http request method used for the upload. Node that AWS only accepts POST's
+
+```html
+    <img-upload method='PUT'></img-upload>
+```
+
+#### removeAfterUpload (optional, default true)
+
+if true, the picture is removed from the queue and the thumbnail disappears once the upload is complete
+
+```html
+    <img-upload remove-after-upload='false'></img-upload>
+```
+
+#### acceptAllTypes (optional, default false)
+
+if false, a filter is added to accept only jpg, png, jpeg, bmp and gif files
+
+#### onUploadFinished (optional, default noop)
+
+A callback can be passed to the directive: onUploadFinished is called whenever the upload is done, no matter if it succeeded or not. An error is passed as argument (='null' if success).
+
+```javascript
+    <img-upload on-upload-finished='someFunction'></img-upload>
+```
+
+### Pass the token Url
 
 The token Url is the url on which the directive will issue a GET request to get the AWSKey, policy, signature and url specified earlier. To pass it to the directive, configure the token provider as follows:
 
