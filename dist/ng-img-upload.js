@@ -262,6 +262,7 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
       restrict: 'E',
       scope: {
         queueLimit: '=',
+        sizeLimit: '=',
         removeAfterUpload: '=',
         method: '=',
         onUploadFinished: '='
@@ -277,6 +278,8 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
         scope.uploader.method = scope.method || 'POST';
         // Only one picture should be uploaded
         scope.uploader.queueLimit = scope.queueLimit || 1;
+        // File max size accepted
+        sizeLimit = scope.sizeLimit || 10000000;
         // Remove file from queue, hence on screen, after upload
         scope.uploader.removeAfterUpload = scope.removeAfterUpload || true;
 
@@ -287,13 +290,28 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
             fn: function(item /*{File|FileLikeObject}*/, options) {
               var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
               if ('|jpg|png|jpeg|bmp|gif|'.indexOf(type) === -1) {
-                throw new Error('File extension not supported (' + type + ')');
+                var err = new Error('File extension not supported (' + type + ')')
+                onUploadFinished(err);
+                throw err;
               }
 
               return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
             }
           });
         }
+
+        scope.uploader.filters.push({
+          name: 'sizeFilter',
+          fn: function(item /*{File|FileLikeObject}*/, options) {
+            var size = item.size;
+            if (size > sizeLimit) {
+              var err = new Error('File too big (' + size + ')')
+              onUploadFinished(err);
+              throw err;
+            }
+            return size < sizeLimit;
+          }
+        });
 
         scope.uploader.onCompleteItem = function(fileItem, response, status, headers) {
           // Empty the session storage once the item has been uploaded

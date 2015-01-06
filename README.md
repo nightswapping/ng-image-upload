@@ -102,6 +102,14 @@ Number of picture which can be uploaded
     <img-upload queue-limit='10'></img-upload>
 ```
 
+#### sizeLimit (optional, default 10mo)
+
+Limit to the size of the file to be uploaded in octets.
+
+```html
+    <img-upload size-limit='8000000'></img-upload>
+```
+
 #### method (optional, default 'POST')
 
 Http request method used for the upload. Note that AWS only accepts POST's
