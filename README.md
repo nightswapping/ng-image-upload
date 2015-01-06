@@ -12,6 +12,12 @@ The directive follows a very simple flow to work:
  
 4. It uploads it onto AWS S3
 
+### Dependencies:
+
+imgUpload uses 3 dependencies which needs to be loaded before usage:
+- [AngularJs] (https://github.com/angular/angular.js)
+- [angular-file-upload] (https://github.com/nervgh/angular-file-upload)
+- [ngStorage] (https://github.com/gsklee/ngStorage)
 
 ### Generating AWS S3 tokens:
 Before using the directive, you need to create and configure an Amazon S3 bucket:
