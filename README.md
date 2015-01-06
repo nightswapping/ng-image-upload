@@ -104,7 +104,7 @@ Number of picture which can be uploaded
 
 #### method (optional, default 'POST')
 
-Http request method used for the upload. Node that AWS only accepts POST's
+Http request method used for the upload. Note that AWS only accepts POST's
 
 ```html
     <img-upload method='PUT'></img-upload>
@@ -138,4 +138,26 @@ The token Url is the url on which the directive will issue a GET request to get 
   .config(['tokenProvider', function(tokenProvider) {
     tokenProvider.setUrl('token')
   }])
+```
+
+### Demo
+
+The project contains a simple example to see the directive in action.
+To get it working add a secret.js (or .json) file in the example folder with your AWS credentials so they can be passed onto the directive. Then simply run ```node example/server.js``` to access it on port 3000.
+
+The secret.js file looks like this:
+
+```javascript
+module.exports.token = {
+  AWSKey : 'AKRllRIlRllRKKNSDFAS',
+  policy:
+    'efdsfKKKfdsffdsLLfdsff92fds23fsljfsdfsdfsdflfds00DBaIiwKICAiY29uZGl0aW9uc' +
+    'yI6IFsKICAgIHsiYnVjasaq22ogImFuZ3VsYfdsfdsvYWQifSdsfdsfIFsic3RhcnRzLXdpdG' +
+    'giLCAiJGtleSIsICIiXSwKICAfdLsiYWNsIjogInByaXZhdGUifSwKICAgIFsic3RhcnRzLXd' +
+    'pdGgiLCAiJENvbnRlbnQtVHlwZSIfdaAiXSwKICAgIFsic3RhcnRzLXdpdGgiLCAiJGZpbGVu' +
+    'YW1lf1wgIiJdLAogICAgWyJjb250ZW504Wxlbmd0aC1yYW5nZSIsIDAsIDUyNDI4ODAwMF0KI' +
+    'CBdCfds',
+  signature: 'SFDFDsaa0923rfdfdsfsdfuBq0c=',
+  url: 'https://<YOUR BUCKET NAME>.s3.amazonaws.com/'
+}
 ```

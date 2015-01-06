@@ -33,7 +33,8 @@ app.get('/token', function (req, res) {
       //'pdGgiLCAiJENvbnRlbnQtVHlwZSIfdaAiXSwKICAgIFsic3RhcnRzLXdpdGgiLCAiJGZpbGVu' +
       //'YW1lf1wgIiJdLAogICAgWyJjb250ZW504Wxlbmd0aC1yYW5nZSIsIDAsIDUyNDI4ODAwMF0KI' +
       //'CBdCfds',
-    //signature: 'SFDFDsaa0923rfdfdsfsdfuBq0c='
+    //signature: 'SFDFDsaa0923rfdfdsfsdfuBq0c=',
+    //url: 'https://<YOUR BUCKET NAME>.s3.amazonaws.com/'
   //}
 
   res.send(token);
