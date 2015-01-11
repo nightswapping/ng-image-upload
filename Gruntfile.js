@@ -6,10 +6,10 @@ module.exports = function(grunt) {
     // Task configuration.
     jshint: {
       all: [
-        'uploads.js',
-        'directives/**/*.js',
-        'controllers/**/*.js',
-        'services/**/*.js'
+        'src/uploads.js',
+        'src/directives/**/*.js',
+        'src/controllers/**/*.js',
+        'src/services/**/*.js'
       ],
       options: {
         curly: true,
@@ -62,6 +62,12 @@ module.exports = function(grunt) {
         dest: 'dist/ng-img-upload.js',
       },
     },
+    clean : {
+        dist : {
+            src : [ "dist/templates.js",
+            ]
+        }
+    },
     watch: {
       gruntfile: {
         files: ['example/index.jade', 'src/templates/**'],
@@ -72,12 +78,12 @@ module.exports = function(grunt) {
 
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-jade');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-html2js');
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'qunit']);
-
+  grunt.registerTask('build', ['jshint', 'html2js', 'concat', 'clean']);
 };
