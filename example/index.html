@@ -8,6 +8,12 @@
     <script src="bower_components/ngstorage/ngStorage.js"></script>
     <script src="bower_components/angular-file-upload/angular-file-upload.js"></script>
     <script src="dist/ng-img-upload.js"></script>
+    <script type="text/javascript">
+      angular.module('uploads')
+       .config(['tokenProvider', function(tokenProvider) {
+        tokenProvider.setUrl('token');
+      }]);
+    </script>
     <style>
       .my-drop-zone { border: dotted 3px lightgray; }
       .nv-file-over { border: dotted 3px red; }

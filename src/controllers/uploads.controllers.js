@@ -1,10 +1,6 @@
 ;(function(app) {
   'use strict';
 
-  app.config(['tokenProvider', function(tokenProvider) {
-    tokenProvider.setUrl('token');
-  }]);
-
   app.controller('uploads.controllers',
     ['$scope', '$http', '$log', '$sessionStorage', 'token', 'uploadsUtils', 'FileUploader',
     function($scope, $http, $log, $sessionStorage, fetchToken, utils, FileUploader) {

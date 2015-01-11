@@ -59,10 +59,6 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
 ;;(function(app) {
   'use strict';
 
-  app.config(['tokenProvider', function(tokenProvider) {
-    tokenProvider.setUrl('token');
-  }]);
-
   app.controller('uploads.controllers',
     ['$scope', '$http', '$log', '$sessionStorage', 'token', 'uploadsUtils', 'FileUploader',
     function($scope, $http, $log, $sessionStorage, fetchToken, utils, FileUploader) {
@@ -279,7 +275,7 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
         // Only one picture should be uploaded
         scope.uploader.queueLimit = scope.queueLimit || 1;
         // File max size accepted
-        sizeLimit = scope.sizeLimit || 10000000;
+        var sizeLimit = scope.sizeLimit || 10000000;
         // Remove file from queue, hence on screen, after upload
         scope.uploader.removeAfterUpload = scope.removeAfterUpload || true;
 
