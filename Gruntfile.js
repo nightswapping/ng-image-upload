@@ -68,6 +68,13 @@ module.exports = function(grunt) {
             ]
         }
     },
+    karma: {
+      unit: {
+        configFile: './test/karma-unit.conf.js',
+        autoWatch: false,
+        singleRun: true
+      },
+    },
     watch: {
       gruntfile: {
         files: ['example/index.jade', 'src/templates/**'],
@@ -77,6 +84,7 @@ module.exports = function(grunt) {
   });
 
   // These plugins provide necessary tasks.
+  grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-jade');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');

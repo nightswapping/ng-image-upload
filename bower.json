@@ -21,6 +21,7 @@
   "dependencies": {
     "angular-file-upload": "~1.1.5",
     "angular": "~1.3.5",
-    "ngstorage": "~0.3.0"
+    "ngstorage": "~0.3.0",
+    "angular-mocks": "~1.3.8"
   }
 }

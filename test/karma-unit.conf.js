@@ -9,26 +9,28 @@ module.exports = function ( karma ) {
      * This is the list of file patterns to load into the browser during testing.
      */
     files: [
+      'bower_components/angular/angular.js',
+      'bower_components/angular-mocks/angular-mocks.js',
+      'bower_components/ngstorage/ngStorage.js',
+      'bower_components/angular-file-upload/angular-file-upload.js',
+      'test/mocha.conf.js',
+      'dist/ng-img-upload.js',
+      'test/client/module.spec.js',
+
+      'node_modules/chai/chai.js',
+      'test/lib/chai-should.js',
+      'test/lib/chai-expect.js',
+
     ],
     exclude: [
       'src/assets/**/*.js',
       'src/**/*.e2e.spec.js'
     ],
-    frameworks: [ 'jasmine' ],
+    frameworks: [ 'mocha' ],
     plugins: [
-      'karma-jasmine', 'karma-firefox-launcher', 'karma-chrome-launcher',
+      'karma-mocha', 'karma-firefox-launcher', 'karma-chrome-launcher',
       'karma-phantomjs-launcher', 'karma-coffee-preprocessor', 'karma-ng-html2js-preprocessor'
     ],
-    preprocessors: {
-      '**/*.coffee': 'coffee',
-      '**/*.json': [ 'ng-html2js' ]
-    },
-
-    ngHtml2JsPreprocessor: {
-      stripPrefix: 'tests/fixtures/',
-      stripSufix: '.json',
-      moduleName: 'cosmoclient.fixtures'
-    },
 
     /**
      * How to report, by default.
