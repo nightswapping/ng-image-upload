@@ -44,6 +44,10 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
         url = _url;
       },
 
+      getUrl : function() {
+        return url;
+      },
+
       $get : function($http) {
         if (!url) {
           throw new Error('You must set the token url before attempting to upload a photo.');
@@ -67,18 +71,19 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
 
       // token should be a JSON object containing the Policy and Signature
       // which are part of the tokens for AWS Uploads
-      var token,
-          isFileTooBig;
+      $scope.token = {};
+      var isFileTooBig;
 
       var uploader = $scope.uploader = new FileUploader();
 
       fetchToken.success(function(data) {
         $scope.tokenStatus = 'received';
+
         // Define policy and signature for AWS upload
-        token = data;
+        $scope.token = data;
 
         // Url to hit for the post request
-        uploader.url = token.url;
+        uploader.url = $scope.token.url;
       })
       .error(function() {
         throw new Error('Couldn\'t retreive AWS credentials');
@@ -89,12 +94,12 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
         // Updates the formData for Amazon AWS S3 Upload
         fileItem.formData.push({
           key:  fileItem.file.name,
-          AWSAccessKeyId: token.AWSKey,
+          AWSAccessKeyId: $scope.token.AWSKey,
           acl: 'private',
           'Content-Type': (fileItem.file.type !== '') ? fileItem.file.type : 'application/octet-stream',
           filename: fileItem.file.name,
-          policy: token.policy,
-          signature: token.signature
+          policy: $scope.token.policy,
+          signature: $scope.token.signature
         });
 
         var reader = new FileReader();

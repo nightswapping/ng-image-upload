@@ -9,18 +9,19 @@
 
       // token should be a JSON object containing the Policy and Signature
       // which are part of the tokens for AWS Uploads
-      var token,
-          isFileTooBig;
+      $scope.token = {};
+      var isFileTooBig;
 
       var uploader = $scope.uploader = new FileUploader();
 
       fetchToken.success(function(data) {
         $scope.tokenStatus = 'received';
+
         // Define policy and signature for AWS upload
-        token = data;
+        $scope.token = data;
 
         // Url to hit for the post request
-        uploader.url = token.url;
+        uploader.url = $scope.token.url;
       })
       .error(function() {
         throw new Error('Couldn\'t retreive AWS credentials');
@@ -31,12 +32,12 @@
         // Updates the formData for Amazon AWS S3 Upload
         fileItem.formData.push({
           key:  fileItem.file.name,
-          AWSAccessKeyId: token.AWSKey,
+          AWSAccessKeyId: $scope.token.AWSKey,
           acl: 'private',
           'Content-Type': (fileItem.file.type !== '') ? fileItem.file.type : 'application/octet-stream',
           filename: fileItem.file.name,
-          policy: token.policy,
-          signature: token.signature
+          policy: $scope.token.policy,
+          signature: $scope.token.signature
         });
 
         var reader = new FileReader();

@@ -26,10 +26,10 @@ module.exports = function ( karma ) {
       'src/assets/**/*.js',
       'src/**/*.e2e.spec.js'
     ],
-    frameworks: [ 'mocha' ],
+    frameworks: [ 'mocha', 'sinon' ],
     plugins: [
       'karma-mocha', 'karma-firefox-launcher', 'karma-chrome-launcher',
-      'karma-phantomjs-launcher', 'karma-coffee-preprocessor', 'karma-ng-html2js-preprocessor'
+      'karma-phantomjs-launcher', 'karma-sinon'
     ],
 
     /**
