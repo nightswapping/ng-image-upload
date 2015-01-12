@@ -148,6 +148,51 @@ The token Url is the url on which the directive will issue a GET request to get 
   }])
 ```
 
+### Using custom templates
+
+The directive comes with a default template for the interface. It is stores it the app's $templateCache and can be easily overwritten. Simply add a new template for the key 'templates/imgupload.tpl.jade'.
+
+The default template is the following:
+
+```jade
+div(nv-file-drop='', uploader='uploader')
+  .container(ng-switch='tokenStatus')
+    .row(ng-switch-when='received')
+      .col-md-3
+        h3 Select files
+        div(ng-show='uploader.isHTML5')
+          .well.my-drop-zone(nv-file-over='', uploader='uploader') Base drop zone
+        | Single
+        input(type='file', nv-file-select='', uploader='uploader')
+      .col-md-9(style='margin-bottom: 40px')
+        h2 Files
+        div(ng-repeat='item in uploader.queue')
+          div(ng-show="uploader.isHTML5", ng-thumb="{ file: item._file, height: 100 }")
+          strong {{ item.file.name }}
+          p(
+          ng-show='uploader.isHTML5',
+          nowrap='',
+          style='display: inline-block') {{ item.file.size/1024/1024|number:2 }} MB
+        div
+          button.btn.btn-success.btn-s(
+          type='button',
+          ng-click='uploader.uploadAll()',
+          ng-disabled='!uploader.getNotUploadedItems().length')
+            | Upload picture
+          button.btn.btn-danger.btn-s(
+          type='button',
+          ng-click='uploader.clearQueue()',
+          ng-disabled='!uploader.queue.length')
+            | Remove picture
+    .row(ng-switch-when='missing')
+      .col-md-12
+        h1 No token has been received
+```
+
+Most of the variables are self-explanatory and should be added to your custom templates.
+The directive exposes a switch variables which is optional: it toggles different views depending on whether or not the token has been received or not.
+
+
 ### Demo
 
 The project contains a simple example to see the directive in action.
