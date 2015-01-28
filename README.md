@@ -1,5 +1,7 @@
 # imgUpload
 
+[ ![ng-img-upload master](https://codeship.com/projects/58520180-890e-0132-21fc-7a1f56d80b92/status?branch=master)](https://codeship.com/projects/59578)
+
 A simple directive to upload images to Amazon S3 servers.
 
 The directive follows a very simple flow to work:
@@ -7,9 +9,9 @@ The directive follows a very simple flow to work:
 1. It requires an AWS token from your server
 
 2. Once provided, it displays an upload form
- 
+
 3. Once a picture is added, it resizes it and stores it in session storage if possible
- 
+
 4. It uploads it onto AWS S3
 
 ### Dependencies:

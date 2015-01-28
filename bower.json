@@ -1,6 +1,6 @@
 {
   "name": "ng-img-upload",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "authors": [
     "Arnaud Drizard <arnaud.drizard@gmail.com>"
   ],
@@ -20,8 +20,11 @@
   ],
   "dependencies": {
     "angular-file-upload": "~1.1.5",
-    "angular": "~1.3.5",
+    "angular": "~1.3.11",
     "ngstorage": "~0.3.0",
     "angular-mocks": "~1.3.8"
+  },
+  "resolutions": {
+    "angular": "~1.3.11"
   }
 }
