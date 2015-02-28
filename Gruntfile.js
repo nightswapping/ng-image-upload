@@ -59,7 +59,7 @@ module.exports = function(grunt) {
           'src/directives/uploads.directives.js',
           'src/uploads.js'
         ],
-        dest: 'dist/ng-img-upload.js',
+        dest: 'dist/ng-image-upload.js',
       },
     },
     clean : {

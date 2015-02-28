@@ -14,7 +14,7 @@ module.exports = function ( karma ) {
       'bower_components/ngstorage/ngStorage.js',
       'bower_components/angular-file-upload/angular-file-upload.js',
       'test/mocha.conf.js',
-      'dist/ng-img-upload.js',
+      'dist/ng-image-upload.js',
       'test/client/module.spec.js',
 
       'node_modules/chai/chai.js',

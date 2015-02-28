@@ -1,6 +1,6 @@
 # imgUpload
 
-[ ![ng-img-upload master](https://codeship.com/projects/58520180-890e-0132-21fc-7a1f56d80b92/status?branch=master)](https://codeship.com/projects/59578)
+[ ![ng-image-upload master](https://codeship.com/projects/58520180-890e-0132-21fc-7a1f56d80b92/status?branch=master)](https://codeship.com/projects/59578)
 
 A simple directive to upload images to Amazon S3 servers.
 
