@@ -15,12 +15,14 @@
       },
 
       $get : function($http) {
-        if (!url) {
-          throw new Error('You must set the token url before attempting to upload a photo.');
-        }
+        return function(filename) {
+          if (!url) {
+            throw new Error('You must set the token url before attempting to upload a photo.');
+          }
 
-        // Request token from server
-        return $http.get(url);
+          // Request token from server
+          return $http.post(url, { filename: filename });
+        };
       }
     };
   });

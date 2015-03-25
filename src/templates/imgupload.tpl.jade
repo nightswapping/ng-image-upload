@@ -1,6 +1,6 @@
 div(nv-file-drop='', uploader='uploader')
   .container(ng-switch='tokenStatus')
-    .row(ng-switch-when='received')
+    .row(ng-switch-when='ok')
       .col-md-3
         h3 Select files
         div(ng-show='uploader.isHTML5')

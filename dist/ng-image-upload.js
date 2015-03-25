@@ -4,7 +4,7 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
   $templateCache.put("templates/imgupload.tpl.jade",
     "<div nv-file-drop=\"\" uploader=\"uploader\">\n" +
     "  <div ng-switch=\"tokenStatus\" class=\"container\">\n" +
-    "    <div ng-switch-when=\"received\" class=\"row\">\n" +
+    "    <div ng-switch-when=\"ok\" class=\"row\">\n" +
     "      <div class=\"col-md-3\">\n" +
     "        <h3>Select files</h3>\n" +
     "        <div ng-show=\"uploader.isHTML5\">\n" +
@@ -49,12 +49,14 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
       },
 
       $get : function($http) {
-        if (!url) {
-          throw new Error('You must set the token url before attempting to upload a photo.');
-        }
+        return function(filename) {
+          if (!url) {
+            throw new Error('You must set the token url before attempting to upload a photo.');
+          }
 
-        // Request token from server
-        return $http.get(url);
+          // Request token from server
+          return $http.post(url, { filename: filename });
+        };
       }
     };
   });
@@ -67,7 +69,7 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
     ['$scope', '$http', '$log', '$sessionStorage', 'token', 'uploadsUtils', 'FileUploader',
     function($scope, $http, $log, $sessionStorage, fetchToken, utils, FileUploader) {
       $scope.$storage = $sessionStorage;
-      $scope.tokenStatus = 'missing';
+      $scope.tokenStatus = 'ok';
 
       // token should be a JSON object containing the Policy and Signature
       // which are part of the tokens for AWS Uploads
@@ -76,52 +78,59 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
 
       var uploader = $scope.uploader = new FileUploader();
 
-      fetchToken.success(function(data) {
-        $scope.tokenStatus = 'received';
-
-        // Define policy and signature for AWS upload
-        $scope.token = data;
-
-        // Url to hit for the post request
-        uploader.url = $scope.token.url;
-      })
-      .error(function() {
-        throw new Error('Couldn\'t retreive AWS credentials');
-      });
-
       // Add the img in session storage once added
       uploader.onAfterAddingFile = function(fileItem) {
-        // Updates the formData for Amazon AWS S3 Upload
-        fileItem.formData.push({
-          key:  fileItem.file.name,
-          AWSAccessKeyId: $scope.token.AWSKey,
-          acl: 'private',
-          'Content-Type': (fileItem.file.type !== '') ? fileItem.file.type : 'application/octet-stream',
-          filename: fileItem.file.name,
-          policy: $scope.token.policy,
-          signature: $scope.token.signature
-        });
-
-        var reader = new FileReader();
-
-        // Turns img into a dataUrl so it can
-        // be stored in the session storage
-        reader.readAsDataURL(fileItem._file);
-        reader.onload = onLoad;
-
-        try {
-          $scope.$storage.reader = reader;
-        } catch(e) {
-          isFileTooBig = true;
-          throw new Error(e);
-        }
-
-        // To resize the picture we need a hidden canvas
-        // to draw a new pic with the expected dimensions
         var canvas = document.createElement('canvas');
-        canvas.style.visibility = 'hidden';
-        document.body.appendChild(canvas);
+        fetchToken(fileItem.file.name).success(function(data) {
+          console.log(data);
+          $scope.tokenStatus = 'ok';
 
+          // Define policy and signature for AWS upload
+          $scope.token = data;
+
+          // Use the filename provided by the server if any
+          fileItem.file.name = $scope.token.filename || fileItem.file.name;
+
+          // Url to hit for the post request
+          uploader.url = $scope.token.uploadUrl;
+          fileItem.url = $scope.token.uploadUrl;
+
+          // Updates the formData for Amazon AWS S3 Upload
+          fileItem.formData.push({
+            key:  fileItem.file.name,
+            AWSAccessKeyId: $scope.token.AWSKey,
+            acl: 'private',
+            'Content-Type': (fileItem.file.type !== '') ? fileItem.file.type : 'application/octet-stream',
+            filename: $scope.token.filename,
+            policy: $scope.token.policy,
+            signature: $scope.token.signature
+          });
+
+          var reader = new FileReader();
+
+          // Turns img into a dataUrl so it can
+          // be stored in the session storage
+          reader.readAsDataURL(fileItem._file);
+          reader.onload = onLoad;
+
+          try {
+            $scope.$storage.reader = reader;
+          } catch(e) {
+            isFileTooBig = true;
+            throw new Error(e);
+          }
+
+          // To resize the picture we need a hidden canvas
+          // to draw a new pic with the expected dimensions
+          canvas.style.visibility = 'hidden';
+          document.body.appendChild(canvas);
+
+          uploader.url = $scope.token.uploadUrl;
+        })
+        .error(function() {
+          $scope.tokenStatus = 'missing';
+          throw new Error('Couldn\'t retreive AWS credentials');
+        });
         // Wait for the reader to be loaded to get the right img.src
         function onLoad(event) {
           var img = new Image();
@@ -133,8 +142,25 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
       uploader.onBeforeUploadItem = function(fileItem) {
         // Parse the item stored in session storage
         // before the server upload
+        console.log(fileItem);
         if (!isFileTooBig) {
           fileItem._file = utils.dataURItoBlob($scope.$storage.reader);
+        }
+      };
+
+      // Post a success message to response url to notify the server
+      // everything went fine
+      uploader.onSuccessItem = function(fileItem, response, status, headers) {
+        if ($scope.token.responseUrl) {
+          $http.post($scope.token.responseUrl, { filename: fileItem.file.name, response: 'success', status: status, headers: headers });
+        }
+      };
+
+      // Post an error message to response url to notify the server
+      // something went wrong
+      uploader.onErrorItem = function(fileItem, response, status, headers) {
+        if ($scope.token.responseUrl) {
+          $http.post($scope.token.responseUrl, { filename: fileItem.file.name, response: 'error', status: status, headers: headers });
         }
       };
     }]);

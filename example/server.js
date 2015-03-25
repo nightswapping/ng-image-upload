@@ -4,6 +4,7 @@ var app        = express()
 var bodyParser = require('body-parser')
 var multer     = require('multer')
 var secret     = require('./secret');
+var md5        = require('MD5');
 
 app.use(multer({ dest: './uploads/',
   rename: function (fieldname, filename) {
@@ -21,8 +22,11 @@ app.get('/', function (req, res) {
   res.render('./index.html')
 })
 
-app.get('/token', function (req, res) {
+app.post('/token', function (req, res) {
   var token = secret.token;
+  // Hash the filename
+  token.filename = md5(req.body.filename)
+
   // The token has the following format (dummy data, do not use for production :) ):
   //var token = {
     //AWSKey : 'AKRllRIlRllRKKNSDFAS',
@@ -34,10 +38,16 @@ app.get('/token', function (req, res) {
       //'YW1lf1wgIiJdLAogICAgWyJjb250ZW504Wxlbmd0aC1yYW5nZSIsIDAsIDUyNDI4ODAwMF0KI' +
       //'CBdCfds',
     //signature: 'SFDFDsaa0923rfdfdsfsdfuBq0c=',
-    //url: 'https://<YOUR BUCKET NAME>.s3.amazonaws.com/'
+    //uploadUrl: 'https://<YOUR BUCKET NAME>.s3.amazonaws.com/',
+    //responseUrl: '/response'
   //}
 
   res.send(token);
+})
+
+app.post('/response', function (req, res) {
+  console.log(req.body.response);
+  res.sendStatus(200)
 })
 
 app.post('/upload', function (req, res) {

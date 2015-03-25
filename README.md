@@ -76,13 +76,25 @@ Before using the directive, you need to create and configure an Amazon S3 bucket
 
 5. Provide the signature to the directives
 
-The directive will make a GET Request to your server on the URL you provided it with. You must provide the following items on response:
+The directive will make an HTTP POST Request to your server on the URL you provided it with. The request provides the item `filename` so you can modify it to normalize your items name or leave it as it is.
+
+You must provide the following items on response:
 ```json
 {
     "AWSKey" : "<YOUR AWS PUBLIC KEY>",
     "policy": "<YOUR BASE-64 ENCODED POLICY>",
     "signature": "<YOUR BASE-64 ENCODED HMAC-SHA1 SIGNATURE>", // HMAC-SHA-256 for Frankfurt
-    "url": "https://<YOUR BUCKET NAME>.s3.amazonaws.com/"
+    "filename": <the item filename>, (optional - you can modify the item file name or leave it as it is)
+    "uploadUrl": "https://<YOUR BUCKET NAME>.s3.amazonaws.com/",
+    "responseUrl": "<your response url>", (optional - only if you want to receive the response from AWS)
+}
+```
+If you are using AWS or a thier hosting service, you'll likely want to get notified of the upload result. To do so, just pass a `responseUrl` parameter. A post request will be issued to this url with the following parameter.
+```json
+{
+  filename: <the filname just uploaded>,
+  response: 'success' || 'error',
+  status: <the HTTP response status code>
 }
 ```
 
