@@ -1,4 +1,26 @@
 {
+  "name": "ng-image-upload",
+  "version": "0.0.1",
+  "description": "Upload images directly from angular.js to Amazon S3",
+  "main": "dist/ng-image-upload.js",
+  "author": { "name": "Nightswapping", "homepage": "http://nightswapping.com" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nightswapping/ng-image-upload.git"
+  },
+  "keywords": [
+    "angular",
+    "angular.js",
+    "upload",
+    "file",
+    "amazon",
+    "s3"
+  ],
+  "licence": "MIT",
+  "homepage": "https://github.com/nightswapping/ng-image-upload",
+  "bugs": {
+    "url": "https://github.com/nightswapping/ng-image-upload/issues"
+  },
   "engines": {
     "node": ">= 0.10.0"
   },
