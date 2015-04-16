@@ -13,23 +13,16 @@ module.exports = function ( karma ) {
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/ngstorage/ngStorage.js',
       'bower_components/angular-file-upload/angular-file-upload.js',
-      'test/mocha.conf.js',
       'dist/ng-image-upload.js',
-      'test/client/module.spec.js',
-
-      'node_modules/chai/chai.js',
-      'test/lib/chai-should.js',
-      'test/lib/chai-expect.js',
-
+      'test/client/module.spec.js'
     ],
     exclude: [
       'src/assets/**/*.js',
       'src/**/*.e2e.spec.js'
     ],
-    frameworks: [ 'mocha', 'sinon' ],
+    frameworks: [ 'jasmine' ],
     plugins: [
-      'karma-mocha', 'karma-firefox-launcher', 'karma-chrome-launcher',
-      'karma-phantomjs-launcher', 'karma-sinon'
+      'karma-firefox-launcher', 'karma-chrome-launcher', 'karma-phantomjs-launcher', 'karma-jasmine'
     ],
 
     /**
