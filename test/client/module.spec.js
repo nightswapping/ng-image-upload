@@ -1,13 +1,30 @@
 describe('Testing Module Definition', function() {
 
-  var token = {
-    url: 'foo',
-    AWSKey: 'bar',
-    policy: 'fiz',
-    signature: 'buz'
-  }
+  var scope,
+      ctrl,
+      token,
+      tokenProviderTester,
+      fileItem,
+      fetchToken = jasmine.createSpy();
 
-  var fileItem = {
+  beforeEach(module('uploads', function (tokenProvider) {
+    tokenProvider.$get = function () {
+      return fetchToken;
+    };
+    tokenProviderTester = tokenProvider;
+  }));
+
+  beforeEach(inject(function ($rootScope, $controller) {
+    scope = $rootScope.$new();
+
+    token = {
+      url: 'foo',
+      AWSKey: 'bar',
+      policy: 'fiz',
+      signature: 'buz'
+    };
+
+    fileItem = {
       lastModifiedDate: new Date(),
       size: 1e6,
       type: 'image/jpeg',
@@ -19,77 +36,51 @@ describe('Testing Module Definition', function() {
       _file: new Blob(),
       _prepareToUploading: jasmine.createSpy(),
       upload: jasmine.createSpy()
-  }
+    };
 
-  var tokenProviderTester;
-  var q, deferred, mockTokenProviderGet, scope, ctrl;
-  var counter;
+    fetchToken.and.callFake(function (fileName) {
+      return {
+        success: jasmine.createSpy().and.callFake(function (callback) {
+          callback(token);
+          return { error: function () {} };
+        })
+      };
+    });
 
-  beforeEach(module('uploads'))
+    tokenProviderTester.setUrl('test-route')
 
-  beforeEach(
-    module('uploads', function(tokenProvider) {
-      counter = 0;
-
-      tokenProvider.$get = function() {
-        var fake = {
-          success: function(fn) {
-            counter++;
-            fn(token);
-            var mock = function() {}
-            mock.error = function() {}
-            return mock },
-        };
-        return fake;
-      }
-
-      tokenProviderTester = tokenProvider
-    })
-  );
-
-  beforeEach(inject(function () {}));
+    ctrl = $controller('uploads.controllers', {$scope: scope, tokenProvider: tokenProviderTester});
+  }));
 
   describe('Configure states', function () {
 
-    beforeEach(inject(function($rootScope, $controller, $q) {
-      tokenProviderTester.setUrl('test-route')
-      scope = $rootScope.$new();
-      q = $q;
-      ctrl = $controller('uploads.controllers', {$scope: scope, tokenProvider: tokenProviderTester});
-    }));
-
-    it('set the token-url in config phase', function () {
+    it('token provider should return the token-url in config phase', function () {
       expect(tokenProviderTester.getUrl()).toEqual('test-route')
     });
 
-    it('should have call fetchToken.sucess', function () {
-      expect(counter).toEqual(1)
+    it('should assign the token and set the tokenStatus as "ok" after the token has been received', function () {
+      var dummy = scope.uploader.FileItem = fileItem;
+      scope.uploader.onAfterAddingFile(dummy)
+
+      expect(scope.tokenStatus).toEqual('ok')
+      expect(scope.token).toEqual(token);
     });
 
-    it('should set the tokenStatus as "received" after the token has been received', function () {
-      expect(scope.tokenStatus).toEqual('received')
-    });
-
-    it('initially sets the tokenStatus as "received"', function () {
-      expect(scope.token.url).toEqual('foo')
-      expect(scope.token.AWSKey).toEqual('bar')
-      expect(scope.token.policy).toEqual('fiz')
-      expect(scope.token.signature).toEqual('buz')
-    });
-
-    it('add file to the uploader queue', function () {
+    it('should add the file to the uploader queue', function () {
       var dummy = scope.uploader.FileItem = fileItem;
 
       scope.uploader.queue.push(dummy);
       scope.$apply()
+
       expect(scope.uploader.queue.length).toEqual(1)
     });
 
-    it('updates the formData with the token', function () {
+    it('should update the formData with the token', function () {
       var dummy = scope.uploader.FileItem = fileItem;
 
       scope.uploader.queue.push(dummy);
       scope.uploader.onAfterAddingFile(dummy)
+
       scope.$apply()
       expect(dummy.formData.length).toEqual(1)
       expect(dummy.formData[0].key).toEqual('foobar')
@@ -104,7 +95,7 @@ describe('Testing Module Definition', function() {
       scope.uploader.onAfterAddingFile(dummy)
       scope.$apply()
       var canvas = document.querySelector('canvas')
-      expect(canvas).not.to.be.null
+      expect(canvas).toBeTruthy();
       expect(canvas.getAttribute('style')).toEqual('visibility: hidden;')
     });
 
@@ -116,7 +107,7 @@ describe('Testing Module Definition', function() {
       scope.$apply()
 
       scope.uploader.uploadAll();
-      expect(fileItem._prepareToUpload).toHaveBeenCalled();
+      expect(fileItem._prepareToUploading).toHaveBeenCalled();
       expect(fileItem.upload).toHaveBeenCalled();
     });
   });
