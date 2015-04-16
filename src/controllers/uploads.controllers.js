@@ -5,24 +5,22 @@
     ['$scope', '$http', '$log', '$sessionStorage', 'token', 'uploadsUtils', 'FileUploader',
     function($scope, $http, $log, $sessionStorage, fetchToken, utils, FileUploader) {
       $scope.$storage = $sessionStorage;
-      $scope.tokenStatus = 'ok';
 
-      // token should be a JSON object containing the Policy and Signature
-      // which are part of the tokens for AWS Uploads
-      $scope.token = {};
       var isFileTooBig;
 
       var uploader = $scope.uploader = new FileUploader();
 
       // Add the img in session storage once added
       uploader.onAfterAddingFile = function(fileItem) {
+
         var canvas = document.createElement('canvas');
-        fetchToken(fileItem.file.name).success(function(data) {
-          console.log(data);
+        // The token should be a JSON object containing the bucker URL, the filename to upload to, the AWS key,
+        // the policy that authorizes the upload and its signature (see the docs) 
+        fetchToken(fileItem.file.name).success(function(token) {
           $scope.tokenStatus = 'ok';
 
           // Define policy and signature for AWS upload
-          $scope.token = data;
+          $scope.token = token;
 
           // Use the filename provided by the server if any
           fileItem.file.name = $scope.token.filename || fileItem.file.name;
