@@ -1,104 +1,107 @@
 ;(function(app) {
   'use strict';
 
-  app.controller('uploads.controllers',
-    ['$scope', '$http', '$log', '$sessionStorage', 'uploadsUtils', 'FileUploader',
-    function($scope, $http, $log, $sessionStorage, utils, FileUploader) {
-      $scope.$storage = $sessionStorage;
+  app.controller('uploads.controllers', uploadsControllers);
+  
+  uploadsControllers.$inject = [ '$scope', '$http', '$log', '$sessionStorage', 'uploadsUtils', 'FileUploader' ];
+  
+  function uploadsControllers ($scope, $http, $log, $sessionStorage, utils, FileUploader) {
 
-      var isFileTooBig;
+    $scope.$storage = $sessionStorage;
 
-      var uploader = $scope.uploader = new FileUploader();
+    var isFileTooBig;
 
-      // Add the img in session storage once added
-      uploader.onAfterAddingFile = function(fileItem) {
+    var uploader = $scope.uploader = new FileUploader();
 
-        var canvas = document.createElement('canvas');
+    // Add the img in session storage once added
+    uploader.onAfterAddingFile = function(fileItem) {
 
-        // The token should be a JSON object containing the bucket URL, the filename to upload to, the AWS key,
-        // the policy that authorizes the upload and its signature (see the docs) 
-        // We get it from the server at the URL provided to the directive
-        $http.post($scope.getTokenUrl(), { filename: fileItem.file.name })
-        .success(function success (token) {
+      var canvas = document.createElement('canvas');
 
-          // Define policy and signature for AWS upload
-          $scope.token = token;
+      // The token should be a JSON object containing the bucket URL, the filename to upload to, the AWS key,
+      // the policy that authorizes the upload and its signature (see the docs) 
+      // We get it from the server at the URL provided to the directive
+      $http.post($scope.getTokenUrl(), { filename: fileItem.file.name })
+      .success(function success (token) {
 
-          // Use the filename provided by the server if any
-          fileItem.file.name = $scope.token.filename || fileItem.file.name;
+        // Define policy and signature for AWS upload
+        $scope.token = token;
 
-          // Url to hit for the post request
-          uploader.url = $scope.token.uploadUrl;
-          fileItem.url = $scope.token.uploadUrl;
+        // Use the filename provided by the server if any
+        fileItem.file.name = $scope.token.filename || fileItem.file.name;
 
-          // Updates the formData for Amazon AWS S3 Upload
-          fileItem.formData.push({
-            key:  fileItem.file.name,
-            AWSAccessKeyId: $scope.token.AWSKey,
-            acl: 'private',
-            'Content-Type': (fileItem.file.type !== '') ? fileItem.file.type : 'application/octet-stream',
-            filename: $scope.token.filename,
-            policy: $scope.token.policy,
-            signature: $scope.token.signature
-          });
+        // Url to hit for the post request
+        uploader.url = $scope.token.uploadUrl;
+        fileItem.url = $scope.token.uploadUrl;
 
-          var reader = new FileReader();
-
-          // Turns img into a dataUrl so it can
-          // be stored in the session storage
-          reader.readAsDataURL(fileItem._file);
-          reader.onload = onLoad;
-
-          try {
-            $scope.$storage.reader = reader;
-          } catch(e) {
-            isFileTooBig = true;
-            throw new Error(e);
-          }
-
-          // To resize the picture we need a hidden canvas
-          // to draw a new pic with the expected dimensions
-          canvas.style.visibility = 'hidden';
-          document.body.appendChild(canvas);
-
-          uploader.url = $scope.token.uploadUrl;
-        })
-        .error(function failure (error) {
-          throw new Error(error);
+        // Updates the formData for Amazon AWS S3 Upload
+        fileItem.formData.push({
+          key:  fileItem.file.name,
+          AWSAccessKeyId: $scope.token.AWSKey,
+          acl: 'private',
+          'Content-Type': (fileItem.file.type !== '') ? fileItem.file.type : 'application/octet-stream',
+          filename: $scope.token.filename,
+          policy: $scope.token.policy,
+          signature: $scope.token.signature
         });
-        // Wait for the reader to be loaded to get the right img.src
-        function onLoad(event) {
-          var img = new Image();
-          img.onload = utils.getDimensions(canvas, $scope.$storage);
-          img.src = event.target.result;
-        }
-      };
 
-      uploader.onBeforeUploadItem = function(fileItem) {
-        // Parse the item stored in session storage
-        // before the server upload
-        console.log(fileItem);
-        if (!isFileTooBig) {
-          fileItem._file = utils.dataURItoBlob($scope.$storage.reader);
-        }
-      };
+        var reader = new FileReader();
 
-      // Post a success message to response url to notify the server
-      // everything went fine
-      uploader.onSuccessItem = function(fileItem, response, status, headers) {
-        if ($scope.token.responseUrl) {
-          $http.post($scope.token.responseUrl, { filename: fileItem.file.name, response: 'success', status: status, headers: headers });
-        }
-      };
+        // Turns img into a dataUrl so it can
+        // be stored in the session storage
+        reader.readAsDataURL(fileItem._file);
+        reader.onload = onLoad;
 
-      // Post an error message to response url to notify the server
-      // something went wrong
-      uploader.onErrorItem = function(fileItem, response, status, headers) {
-        if ($scope.token.responseUrl) {
-          $http.post($scope.token.responseUrl, { filename: fileItem.file.name, response: 'error', status: status, headers: headers });
+        try {
+          $scope.$storage.reader = reader;
+        } catch(e) {
+          isFileTooBig = true;
+          throw new Error(e);
         }
-      };
-    }]);
+
+        // To resize the picture we need a hidden canvas
+        // to draw a new pic with the expected dimensions
+        canvas.style.visibility = 'hidden';
+        document.body.appendChild(canvas);
+
+        uploader.url = $scope.token.uploadUrl;
+      })
+      .error(function failure (error) {
+        throw new Error(error);
+      });
+      // Wait for the reader to be loaded to get the right img.src
+      function onLoad(event) {
+        var img = new Image();
+        img.onload = utils.getDimensions(canvas, $scope.$storage);
+        img.src = event.target.result;
+      }
+    };
+
+    uploader.onBeforeUploadItem = function(fileItem) {
+      // Parse the item stored in session storage
+      // before the server upload
+      console.log(fileItem);
+      if (!isFileTooBig) {
+        fileItem._file = utils.dataURItoBlob($scope.$storage.reader);
+      }
+    };
+
+    // Post a success message to response url to notify the server
+    // everything went fine
+    uploader.onSuccessItem = function(fileItem, response, status, headers) {
+      if ($scope.token.responseUrl) {
+        $http.post($scope.token.responseUrl, { filename: fileItem.file.name, response: 'success', status: status, headers: headers });
+      }
+    };
+
+    // Post an error message to response url to notify the server
+    // something went wrong
+    uploader.onErrorItem = function(fileItem, response, status, headers) {
+      if ($scope.token.responseUrl) {
+        $http.post($scope.token.responseUrl, { filename: fileItem.file.name, response: 'error', status: status, headers: headers });
+      }
+    };
+  }
 
 })(angular.module('uploads.controllers', [
   'angularFileUpload',
@@ -107,10 +110,15 @@
 ]));
 ;;(function(app) {
   'use strict';
+
   // The ngThumb directive adds a picture thumbnail to the page
   // Please note that it only works for browsers supporting the
   // HTML5 FileReader API and the Canvas objects
-  app.directive('ngThumb', ['uploadsUtils', function(uploadsUtils) {
+  app.directive('ngThumb', ngThumbDirective);
+
+  ngThumbDirective.$inject = [ 'uploadsUtils' ];
+
+  function ngThumbDirective (uploadsUtils) {
     return {
       restrict: 'A',
       template: '<canvas/>',
@@ -151,12 +159,18 @@
         }
       }
     };
-  }]);
-})(angular.module('ngthumb.directives', []));
-;;(function(app) {
+  }
+
+})(angular.module('ngthumb.directives', [
+]));
+;;(function (app) {
   'use strict';
 
-  app.directive('imgUpload', ['uploadsUtils', function(uploadsUtils) {
+  app.directive('imgUpload', imgUploadDirective);
+
+  imgUploadDirective.$inject = [ 'uploadsUtils' ];
+
+  function imgUploadDirective (uploadsUtils) {
     return {
       restrict: 'E',
       scope: {
@@ -165,7 +179,11 @@
         removeAfterUpload: '=',
         method: '=',
         onUploadFinished: '=',
-        getTokenUrl: '&tokenUrl'
+        // fetchToken and tokenUrl coexist as alternatives. Either the user can provide an URL and let us fetch 
+        // the token ourselves, or they can hand over a function to do it.
+        // This second option is more comprehensive as it allows the user to address errors or special cases directly.
+        getTokenUrl: '&tokenUrl',
+        fetchToken: '='
       },
       templateUrl: function (elem, attrs) {
         return attrs.templateUrl || 'templates/imgupload.tpl.jade';
@@ -233,12 +251,19 @@
         };
       }
     };
-  }]);
-})(angular.module('uploads.directives', ['uploads.controllers']));
+  }
+
+})(angular.module('uploads.directives', [
+  'uploads.controllers'
+]));
 ;;(function(app) {
   'use strict';
 
-  app.factory('uploadsUtils', ['$window', function($window) {
+  app.factory('uploadsUtils', uploadsUtils);
+
+  uploadsUtils.$inject = [ '$window' ];
+
+  function uploadsUtils ($window) {
     return {
       // Checks if Browser supports the HTML5 FileReader API and Canvas objects
       checkBrowserCompatibility: !!($window.FileReader && $window.CanvasRenderingContext2D),
@@ -300,8 +325,10 @@
         };
       }
     };
-  }]);
-})(angular.module('uploads.factories', []));
+  }
+
+})(angular.module('uploads.factories', [
+]));
 ;;(function (app) {
   'use strict';
 

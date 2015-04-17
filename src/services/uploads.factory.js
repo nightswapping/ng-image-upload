@@ -1,7 +1,11 @@
 ;(function(app) {
   'use strict';
 
-  app.factory('uploadsUtils', ['$window', function($window) {
+  app.factory('uploadsUtils', uploadsUtils);
+
+  uploadsUtils.$inject = [ '$window' ];
+
+  function uploadsUtils ($window) {
     return {
       // Checks if Browser supports the HTML5 FileReader API and Canvas objects
       checkBrowserCompatibility: !!($window.FileReader && $window.CanvasRenderingContext2D),
@@ -63,5 +67,7 @@
         };
       }
     };
-  }]);
-})(angular.module('uploads.factories', []));
+  }
+
+})(angular.module('uploads.factories', [
+]));

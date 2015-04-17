@@ -1,9 +1,14 @@
 ;(function(app) {
   'use strict';
+
   // The ngThumb directive adds a picture thumbnail to the page
   // Please note that it only works for browsers supporting the
   // HTML5 FileReader API and the Canvas objects
-  app.directive('ngThumb', ['uploadsUtils', function(uploadsUtils) {
+  app.directive('ngThumb', ngThumbDirective);
+
+  ngThumbDirective.$inject = [ 'uploadsUtils' ];
+
+  function ngThumbDirective (uploadsUtils) {
     return {
       restrict: 'A',
       template: '<canvas/>',
@@ -44,5 +49,7 @@
         }
       }
     };
-  }]);
-})(angular.module('ngthumb.directives', []));
+  }
+
+})(angular.module('ngthumb.directives', [
+]));

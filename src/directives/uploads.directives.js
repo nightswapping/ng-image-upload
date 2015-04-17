@@ -1,7 +1,11 @@
-;(function(app) {
+;(function (app) {
   'use strict';
 
-  app.directive('imgUpload', ['uploadsUtils', function(uploadsUtils) {
+  app.directive('imgUpload', imgUploadDirective);
+
+  imgUploadDirective.$inject = [ 'uploadsUtils' ];
+
+  function imgUploadDirective (uploadsUtils) {
     return {
       restrict: 'E',
       scope: {
@@ -10,7 +14,11 @@
         removeAfterUpload: '=',
         method: '=',
         onUploadFinished: '=',
-        getTokenUrl: '&tokenUrl'
+        // fetchToken and tokenUrl coexist as alternatives. Either the user can provide an URL and let us fetch 
+        // the token ourselves, or they can hand over a function to do it.
+        // This second option is more comprehensive as it allows the user to address errors or special cases directly.
+        getTokenUrl: '&tokenUrl',
+        fetchToken: '='
       },
       templateUrl: function (elem, attrs) {
         return attrs.templateUrl || 'templates/imgupload.tpl.jade';
@@ -78,5 +86,8 @@
         };
       }
     };
-  }]);
-})(angular.module('uploads.directives', ['uploads.controllers']));
+  }
+
+})(angular.module('uploads.directives', [
+  'uploads.controllers'
+]));
