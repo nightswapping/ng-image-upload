@@ -27,42 +27,12 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
     "  </div>\n" +
     "</div>");
 }]);
-;(function (app) {
-  'use strict';
-
-  app.provider('token', function () {
-    var self = this,
-        url;
-
-    return {
-      setUrl : function(_url) {
-        url = _url;
-      },
-
-      getUrl : function() {
-        return url;
-      },
-
-      $get : function($http) {
-        return function(filename) {
-          if (!url) {
-            throw new Error('You must set the token url before attempting to upload a photo.');
-          }
-
-          // Request token from server
-          return $http.post(url, { filename: filename });
-        };
-      }
-    };
-  });
-
-})(angular.module('token', []));
 ;;(function(app) {
   'use strict';
 
   app.controller('uploads.controllers',
-    ['$scope', '$http', '$log', '$sessionStorage', 'token', 'uploadsUtils', 'FileUploader',
-    function($scope, $http, $log, $sessionStorage, fetchToken, utils, FileUploader) {
+    ['$scope', '$http', '$log', '$sessionStorage', 'uploadsUtils', 'FileUploader',
+    function($scope, $http, $log, $sessionStorage, utils, FileUploader) {
       $scope.$storage = $sessionStorage;
 
       var isFileTooBig;
@@ -73,10 +43,12 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
       uploader.onAfterAddingFile = function(fileItem) {
 
         var canvas = document.createElement('canvas');
-        // The token should be a JSON object containing the bucker URL, the filename to upload to, the AWS key,
+
+        // The token should be a JSON object containing the bucket URL, the filename to upload to, the AWS key,
         // the policy that authorizes the upload and its signature (see the docs) 
-        fetchToken(fileItem.file.name).success(function(token) {
-          $scope.tokenStatus = 'ok';
+        // We get it from the server at the URL provided to the directive
+        $http.post($scope.getTokenUrl(), { filename: fileItem.file.name })
+        .success(function success (token) {
 
           // Define policy and signature for AWS upload
           $scope.token = token;
@@ -120,9 +92,8 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
 
           uploader.url = $scope.token.uploadUrl;
         })
-        .error(function() {
-          $scope.tokenStatus = 'missing';
-          throw new Error('Couldn\'t retreive AWS credentials');
+        .error(function failure (error) {
+          throw new Error(error);
         });
         // Wait for the reader to be loaded to get the right img.src
         function onLoad(event) {
@@ -158,7 +129,11 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
       };
     }]);
 
-})(angular.module('uploads.controllers', ['token', 'angularFileUpload', 'ngStorage']));
+})(angular.module('uploads.controllers', [
+  'angularFileUpload',
+  'ngStorage',
+  'uploads.factories'
+]));
 ;;(function(app) {
   'use strict';
 
@@ -285,11 +260,17 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
         sizeLimit: '=',
         removeAfterUpload: '=',
         method: '=',
-        onUploadFinished: '='
+        onUploadFinished: '=',
+        getTokenUrl: '&tokenUrl'
       },
       templateUrl: 'templates/imgupload.tpl.jade',
       controller: 'uploads.controllers',
       link: function(scope, element, attributes) {
+
+        // Don't let the directive get initialized if no token url was provided
+        if (!scope.getTokenUrl()) {
+          throw new Error('img-upload directive must be provided a token-url through the eponymous attribute.');
+        }
 
         // onUploadFinished is called when the uplad is done
         // an error is passed as args if an error happened

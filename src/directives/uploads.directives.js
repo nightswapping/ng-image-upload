@@ -9,11 +9,17 @@
         sizeLimit: '=',
         removeAfterUpload: '=',
         method: '=',
-        onUploadFinished: '='
+        onUploadFinished: '=',
+        getTokenUrl: '&tokenUrl'
       },
       templateUrl: 'templates/imgupload.tpl.jade',
       controller: 'uploads.controllers',
       link: function(scope, element, attributes) {
+
+        // Don't let the directive get initialized if no token url was provided
+        if (!scope.getTokenUrl()) {
+          throw new Error('img-upload directive must be provided a token-url through the eponymous attribute.');
+        }
 
         // onUploadFinished is called when the uplad is done
         // an error is passed as args if an error happened

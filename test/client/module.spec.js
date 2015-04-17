@@ -1,21 +1,22 @@
 describe('Testing Module Definition', function() {
 
-  var scope,
+  var $http,
+      scope,
       ctrl,
       token,
       tokenProviderTester,
       fileItem,
       fetchToken = jasmine.createSpy();
 
-  beforeEach(module('uploads', function (tokenProvider) {
-    tokenProvider.$get = function () {
-      return fetchToken;
-    };
-    tokenProviderTester = tokenProvider;
-  }));
+  beforeEach(module('uploads.controllers'));
 
-  beforeEach(inject(function ($rootScope, $controller) {
+  beforeEach(inject(function ($rootScope, $controller, _$http_) {
+    $http = _$http_;
     scope = $rootScope.$new();
+
+    scope.getTokenUrl = function () {
+      return 'token-url';
+    };
 
     token = {
       url: 'foo',
@@ -38,7 +39,7 @@ describe('Testing Module Definition', function() {
       upload: jasmine.createSpy()
     };
 
-    fetchToken.and.callFake(function (fileName) {
+    spyOn($http, 'post').and.callFake(function (fileName) {
       return {
         success: jasmine.createSpy().and.callFake(function (callback) {
           callback(token);
@@ -47,22 +48,15 @@ describe('Testing Module Definition', function() {
       };
     });
 
-    tokenProviderTester.setUrl('test-route')
-
     ctrl = $controller('uploads.controllers', {$scope: scope, tokenProvider: tokenProviderTester});
   }));
 
   describe('Configure states', function () {
 
-    it('token provider should return the token-url in config phase', function () {
-      expect(tokenProviderTester.getUrl()).toEqual('test-route')
-    });
-
     it('should assign the token and set the tokenStatus as "ok" after the token has been received', function () {
       var dummy = scope.uploader.FileItem = fileItem;
       scope.uploader.onAfterAddingFile(dummy)
 
-      expect(scope.tokenStatus).toEqual('ok')
       expect(scope.token).toEqual(token);
     });
 

@@ -2,8 +2,8 @@
   'use strict';
 
   app.controller('uploads.controllers',
-    ['$scope', '$http', '$log', '$sessionStorage', 'token', 'uploadsUtils', 'FileUploader',
-    function($scope, $http, $log, $sessionStorage, fetchToken, utils, FileUploader) {
+    ['$scope', '$http', '$log', '$sessionStorage', 'uploadsUtils', 'FileUploader',
+    function($scope, $http, $log, $sessionStorage, utils, FileUploader) {
       $scope.$storage = $sessionStorage;
 
       var isFileTooBig;
@@ -14,10 +14,12 @@
       uploader.onAfterAddingFile = function(fileItem) {
 
         var canvas = document.createElement('canvas');
-        // The token should be a JSON object containing the bucker URL, the filename to upload to, the AWS key,
+
+        // The token should be a JSON object containing the bucket URL, the filename to upload to, the AWS key,
         // the policy that authorizes the upload and its signature (see the docs) 
-        fetchToken(fileItem.file.name).success(function(token) {
-          $scope.tokenStatus = 'ok';
+        // We get it from the server at the URL provided to the directive
+        $http.post($scope.getTokenUrl(), { filename: fileItem.file.name })
+        .success(function success (token) {
 
           // Define policy and signature for AWS upload
           $scope.token = token;
@@ -61,9 +63,8 @@
 
           uploader.url = $scope.token.uploadUrl;
         })
-        .error(function() {
-          $scope.tokenStatus = 'missing';
-          throw new Error('Couldn\'t retreive AWS credentials');
+        .error(function failure (error) {
+          throw new Error(error);
         });
         // Wait for the reader to be loaded to get the right img.src
         function onLoad(event) {
@@ -99,4 +100,8 @@
       };
     }]);
 
-})(angular.module('uploads.controllers', ['token', 'angularFileUpload', 'ngStorage']));
+})(angular.module('uploads.controllers', [
+  'angularFileUpload',
+  'ngStorage',
+  'uploads.factories'
+]));
