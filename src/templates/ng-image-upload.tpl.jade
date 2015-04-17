@@ -1,29 +1,29 @@
-div(nv-file-drop='', uploader='uploader')
+div(nv-file-drop='', uploader='vm.uploader')
   .container
     .row
       .col-md-3
         h3 Select files
-        div(ng-show='uploader.isHTML5')
-          .well.my-drop-zone(nv-file-over='', uploader='uploader') Base drop zone
+        div(ng-show='vm.uploader.isHTML5')
+          .well.my-drop-zone(nv-file-over='', uploader='vm.uploader') Base drop zone
         | Single
-        input(type='file', nv-file-select='', uploader='uploader')
+        input(type='file', nv-file-select='', uploader='vm.uploader')
       .col-md-9(style='margin-bottom: 40px')
         h2 Files
-        div(ng-repeat='item in uploader.queue')
-          div(ng-show="uploader.isHTML5", ng-thumb="{ file: item._file, height: 100 }")
+        div(ng-repeat='item in vm.uploader.queue')
+          div(ng-show="vm.uploader.isHTML5", ng-thumb="{ file: item._file, height: 100 }")
           strong {{ item.file.name }}
           p(
-          ng-show='uploader.isHTML5',
+          ng-show='vm.uploader.isHTML5',
           nowrap='',
           style='display: inline-block') {{ item.file.size/1024/1024|number:2 }} MB
         div
           button.btn.btn-success.btn-s(
           type='button',
-          ng-click='uploader.uploadAll()',
-          ng-disabled='!uploader.getNotUploadedItems().length')
+          ng-click='vm.uploader.uploadAll()',
+          ng-disabled='!vm.uploader.getNotUploadedItems().length')
             | Upload picture
           button.btn.btn-danger.btn-s(
           type='button',
-          ng-click='uploader.clearQueue()',
-          ng-disabled='!uploader.queue.length')
+          ng-click='vm.uploader.clearQueue()',
+          ng-disabled='!vm.uploader.queue.length')
             | Remove picture

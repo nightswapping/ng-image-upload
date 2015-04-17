@@ -1,8 +1,8 @@
 describe('Testing Module Definition', function() {
 
   var $http,
-      scope,
-      ctrl,
+      $rootScope,
+      vm,
       token,
       tokenProviderTester,
       fileItem,
@@ -10,13 +10,9 @@ describe('Testing Module Definition', function() {
 
   beforeEach(module('uploads.controllers'));
 
-  beforeEach(inject(function ($rootScope, $controller, _$http_) {
+  beforeEach(inject(function (_$rootScope_, $controller, _$http_) {
     $http = _$http_;
-    scope = $rootScope.$new();
-
-    scope.getTokenUrl = function () {
-      return 'token-url';
-    };
+    $rootScope = _$rootScope_;
 
     token = {
       url: 'foo',
@@ -48,34 +44,38 @@ describe('Testing Module Definition', function() {
       };
     });
 
-    ctrl = $controller('uploads.controllers', {$scope: scope, tokenProvider: tokenProviderTester});
+    vm = $controller('uploads.controllers', {});
+
+    vm.getTokenUrl = function () {
+      return 'token-url';
+    };
   }));
 
   describe('Configure states', function () {
 
     it('should assign the token and set the tokenStatus as "ok" after the token has been received', function () {
-      var dummy = scope.uploader.FileItem = fileItem;
-      scope.uploader.onAfterAddingFile(dummy)
+      var dummy = vm.uploader.FileItem = fileItem;
+      vm.uploader.onAfterAddingFile(dummy)
 
-      expect(scope.token).toEqual(token);
+      expect(vm.token).toEqual(token);
     });
 
     it('should add the file to the uploader queue', function () {
-      var dummy = scope.uploader.FileItem = fileItem;
+      var dummy = vm.uploader.FileItem = fileItem;
 
-      scope.uploader.queue.push(dummy);
-      scope.$apply()
+      vm.uploader.queue.push(dummy);
+      $rootScope.$apply()
 
-      expect(scope.uploader.queue.length).toEqual(1)
+      expect(vm.uploader.queue.length).toEqual(1)
     });
 
     it('should update the formData with the token', function () {
-      var dummy = scope.uploader.FileItem = fileItem;
+      var dummy = vm.uploader.FileItem = fileItem;
 
-      scope.uploader.queue.push(dummy);
-      scope.uploader.onAfterAddingFile(dummy)
+      vm.uploader.queue.push(dummy);
+      vm.uploader.onAfterAddingFile(dummy)
 
-      scope.$apply()
+      $rootScope.$apply()
       expect(dummy.formData.length).toEqual(1)
       expect(dummy.formData[0].key).toEqual('foobar')
       expect(dummy.formData[0].AWSAccessKeyId).toEqual('bar')
@@ -83,24 +83,24 @@ describe('Testing Module Definition', function() {
     });
 
     it('creates a hidden canvas element on the DOM', function () {
-      var dummy = scope.uploader.FileItem = fileItem;
+      var dummy = vm.uploader.FileItem = fileItem;
 
-      scope.uploader.queue.push(dummy);
-      scope.uploader.onAfterAddingFile(dummy)
-      scope.$apply()
+      vm.uploader.queue.push(dummy);
+      vm.uploader.onAfterAddingFile(dummy)
+      $rootScope.$apply()
       var canvas = document.querySelector('canvas')
       expect(canvas).toBeTruthy();
       expect(canvas.getAttribute('style')).toEqual('visibility: hidden;')
     });
 
     it('uploads the file properly', function () {
-      var dummy = scope.uploader.FileItem = fileItem;
+      var dummy = vm.uploader.FileItem = fileItem;
 
-      scope.uploader.queue.push(dummy);
-      scope.uploader.onAfterAddingFile(dummy)
-      scope.$apply()
+      vm.uploader.queue.push(dummy);
+      vm.uploader.onAfterAddingFile(dummy)
+      $rootScope.$apply()
 
-      scope.uploader.uploadAll();
+      vm.uploader.uploadAll();
       expect(fileItem._prepareToUploading).toHaveBeenCalled();
       expect(fileItem.upload).toHaveBeenCalled();
     });

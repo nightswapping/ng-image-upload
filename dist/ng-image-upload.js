@@ -3,15 +3,16 @@
 
   app.controller('uploads.controllers', uploadsControllers);
   
-  uploadsControllers.$inject = [ '$scope', '$http', '$log', '$sessionStorage', 'uploadsUtils', 'FileUploader' ];
+  uploadsControllers.$inject = [ '$http', '$log', '$sessionStorage', 'uploadsUtils', 'FileUploader' ];
   
-  function uploadsControllers ($scope, $http, $log, $sessionStorage, utils, FileUploader) {
+  function uploadsControllers ($http, $log, $sessionStorage, utils, FileUploader) {
+    var vm = this;
 
-    $scope.$storage = $sessionStorage;
+    vm.$storage = $sessionStorage;
 
     var isFileTooBig;
 
-    var uploader = $scope.uploader = new FileUploader();
+    var uploader = vm.uploader = new FileUploader();
 
     // Add the img in session storage once added
     uploader.onAfterAddingFile = function(fileItem) {
@@ -21,28 +22,28 @@
       // The token should be a JSON object containing the bucket URL, the filename to upload to, the AWS key,
       // the policy that authorizes the upload and its signature (see the docs) 
       // We get it from the server at the URL provided to the directive
-      $http.post($scope.getTokenUrl(), { filename: fileItem.file.name })
+      $http.post(vm.getTokenUrl(), { filename: fileItem.file.name })
       .success(function success (token) {
 
         // Define policy and signature for AWS upload
-        $scope.token = token;
+        vm.token = token;
 
         // Use the filename provided by the server if any
-        fileItem.file.name = $scope.token.filename || fileItem.file.name;
+        fileItem.file.name = vm.token.filename || fileItem.file.name;
 
         // Url to hit for the post request
-        uploader.url = $scope.token.uploadUrl;
-        fileItem.url = $scope.token.uploadUrl;
+        uploader.url = vm.token.uploadUrl;
+        fileItem.url = vm.token.uploadUrl;
 
         // Updates the formData for Amazon AWS S3 Upload
         fileItem.formData.push({
           key:  fileItem.file.name,
-          AWSAccessKeyId: $scope.token.AWSKey,
+          AWSAccessKeyId: vm.token.AWSKey,
           acl: 'private',
           'Content-Type': (fileItem.file.type !== '') ? fileItem.file.type : 'application/octet-stream',
-          filename: $scope.token.filename,
-          policy: $scope.token.policy,
-          signature: $scope.token.signature
+          filename: vm.token.filename,
+          policy: vm.token.policy,
+          signature: vm.token.signature
         });
 
         var reader = new FileReader();
@@ -53,7 +54,7 @@
         reader.onload = onLoad;
 
         try {
-          $scope.$storage.reader = reader;
+          vm.$storage.reader = reader;
         } catch(e) {
           isFileTooBig = true;
           throw new Error(e);
@@ -64,7 +65,7 @@
         canvas.style.visibility = 'hidden';
         document.body.appendChild(canvas);
 
-        uploader.url = $scope.token.uploadUrl;
+        uploader.url = vm.token.uploadUrl;
       })
       .error(function failure (error) {
         throw new Error(error);
@@ -72,7 +73,7 @@
       // Wait for the reader to be loaded to get the right img.src
       function onLoad(event) {
         var img = new Image();
-        img.onload = utils.getDimensions(canvas, $scope.$storage);
+        img.onload = utils.getDimensions(canvas, vm.$storage);
         img.src = event.target.result;
       }
     };
@@ -82,23 +83,23 @@
       // before the server upload
       console.log(fileItem);
       if (!isFileTooBig) {
-        fileItem._file = utils.dataURItoBlob($scope.$storage.reader);
+        fileItem._file = utils.dataURItoBlob(vm.$storage.reader);
       }
     };
 
     // Post a success message to response url to notify the server
     // everything went fine
     uploader.onSuccessItem = function(fileItem, response, status, headers) {
-      if ($scope.token.responseUrl) {
-        $http.post($scope.token.responseUrl, { filename: fileItem.file.name, response: 'success', status: status, headers: headers });
+      if (vm.token.responseUrl) {
+        $http.post(vm.token.responseUrl, { filename: fileItem.file.name, response: 'success', status: status, headers: headers });
       }
     };
 
     // Post an error message to response url to notify the server
     // something went wrong
     uploader.onErrorItem = function(fileItem, response, status, headers) {
-      if ($scope.token.responseUrl) {
-        $http.post($scope.token.responseUrl, { filename: fileItem.file.name, response: 'error', status: status, headers: headers });
+      if (vm.token.responseUrl) {
+        $http.post(vm.token.responseUrl, { filename: fileItem.file.name, response: 'error', status: status, headers: headers });
       }
     };
   }
@@ -189,6 +190,8 @@
         return attrs.templateUrl || 'templates/ng-image-upload.tpl.jade';
       },
       controller: 'uploads.controllers',
+      controllerAs: 'vm',
+      bindToController: true,
       link: function(scope, element, attributes) {
 
         // Don't let the directive get initialized if no token url was provided

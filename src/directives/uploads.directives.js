@@ -24,6 +24,8 @@
         return attrs.templateUrl || 'templates/ng-image-upload.tpl.jade';
       },
       controller: 'uploads.controllers',
+      controllerAs: 'vm',
+      bindToController: true,
       link: function(scope, element, attributes) {
 
         // Don't let the directive get initialized if no token url was provided
