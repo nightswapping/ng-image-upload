@@ -69,5 +69,5 @@
     };
   }
 
-})(angular.module('uploads.factories', [
+})(angular.module('ng-image-upload.upload-utils', [
 ]));

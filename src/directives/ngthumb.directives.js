@@ -51,5 +51,5 @@
     };
   }
 
-})(angular.module('ngthumb.directives', [
+})(angular.module('ng-image-upload.ngthumb', [
 ]));

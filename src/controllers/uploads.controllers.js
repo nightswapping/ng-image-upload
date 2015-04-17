@@ -104,8 +104,8 @@
     };
   }
 
-})(angular.module('uploads.controllers', [
+})(angular.module('ng-image-upload.img-upload-ctrl', [
   'angularFileUpload',
   'ngStorage',
-  'uploads.factories'
+  'ng-image-upload.upload-utils'
 ]));

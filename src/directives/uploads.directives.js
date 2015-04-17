@@ -90,6 +90,6 @@
     };
   }
 
-})(angular.module('uploads.directives', [
-  'uploads.controllers'
+})(angular.module('ng-image-upload.img-upload-directive', [
+  'ng-image-upload.img-upload-ctrl'
 ]));

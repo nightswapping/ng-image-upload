@@ -8,7 +8,7 @@ describe('Testing Module Definition', function() {
       fileItem,
       fetchToken = jasmine.createSpy();
 
-  beforeEach(module('uploads.controllers'));
+  beforeEach(module('ng-image-upload.img-upload-ctrl'));
 
   beforeEach(inject(function (_$rootScope_, $controller, _$http_) {
     $http = _$http_;

@@ -104,10 +104,10 @@
     };
   }
 
-})(angular.module('uploads.controllers', [
+})(angular.module('ng-image-upload.img-upload-ctrl', [
   'angularFileUpload',
   'ngStorage',
-  'uploads.factories'
+  'ng-image-upload.upload-utils'
 ]));
 ;;(function(app) {
   'use strict';
@@ -162,7 +162,7 @@
     };
   }
 
-})(angular.module('ngthumb.directives', [
+})(angular.module('ng-image-upload.ngthumb', [
 ]));
 ;;(function (app) {
   'use strict';
@@ -256,8 +256,8 @@
     };
   }
 
-})(angular.module('uploads.directives', [
-  'uploads.controllers'
+})(angular.module('ng-image-upload.img-upload-directive', [
+  'ng-image-upload.img-upload-ctrl'
 ]));
 ;;(function(app) {
   'use strict';
@@ -330,7 +330,7 @@
     };
   }
 
-})(angular.module('uploads.factories', [
+})(angular.module('ng-image-upload.upload-utils', [
 ]));
 ;;(function (app) {
   'use strict';
@@ -338,15 +338,15 @@
   return app;
 
 })(
-  angular.module('uploads', [
-    'uploads.templates',
-    'uploads.controllers',
-    'uploads.factories',
-    'ngthumb.directives',
-    'uploads.directives'
+  angular.module('ng-image-upload', [
+    'ng-image-upload.img-upload-tpl'
+    'ng-image-upload.img-upload-ctrl',
+    'ng-image-upload.upload-utils',
+    'ng-image-upload.ngthumb',
+    'ng-image-upload.img-upload-directive'
   ])
 );
-;angular.module('uploads.templates', ['templates/ng-image-upload.tpl.jade']);
+;angular.module('ng-image-upload.img-upload-tpl', ['templates/ng-image-upload.tpl.jade']);
 
 angular.module("templates/ng-image-upload.tpl.jade", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/ng-image-upload.tpl.jade",

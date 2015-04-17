@@ -4,11 +4,11 @@
   return app;
 
 })(
-  angular.module('uploads', [
-    'uploads.templates',
-    'uploads.controllers',
-    'uploads.factories',
-    'ngthumb.directives',
-    'uploads.directives'
+  angular.module('ng-image-upload', [
+    'ng-image-upload.img-upload-tpl',
+    'ng-image-upload.img-upload-ctrl',
+    'ng-image-upload.upload-utils',
+    'ng-image-upload.ngthumb',
+    'ng-image-upload.img-upload-directive'
   ])
 );

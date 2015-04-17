@@ -46,7 +46,7 @@ module.exports = function (grunt) {
     },
     html2js: {
       options: {
-        module: 'uploads.templates'
+        module: 'ng-image-upload.img-upload-tpl'
       },
       main: {
         files: {
