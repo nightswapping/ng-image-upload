@@ -5,6 +5,7 @@
 
 })(
   angular.module('uploads', [
+    'uploads.templates',
     'uploads.controllers',
     'uploads.factories',
     'ngthumb.directives',

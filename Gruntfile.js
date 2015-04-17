@@ -1,5 +1,13 @@
 /*global module:false*/
-module.exports = function(grunt) {
+module.exports = function (grunt) {
+
+  var files = {
+
+    js: 'src/*/*.js',
+    main: 'src/uploads.js',
+    main_templates_in: 'src/uploads-templates-in.js'
+
+  };
 
   // Project configuration.
   grunt.initConfig({
@@ -41,8 +49,9 @@ module.exports = function(grunt) {
         module: 'uploads.templates'
       },
       main: {
-        src: ['src/templates/*.tpl.jade'],
-        dest: 'dist/templates.js'
+        files: {
+          'tmp/templates.js': [ 'src/templates/*.tpl.jade' ]
+        }
       },
     },
     concat: {
@@ -50,23 +59,15 @@ module.exports = function(grunt) {
         separator: ';',
       },
       dist: {
-        src: [
-          'dist/templates.js',
-          'src/services/uploads.provider.js',
-          'src/controllers/uploads.controllers.js',
-          'src/services/uploads.factory.js',
-          'src/directives/ngthumb.directives.js',
-          'src/directives/uploads.directives.js',
-          'src/uploads.js'
-        ],
-        dest: 'dist/ng-image-upload.js',
+        files: {
+          'dist/ng-image-upload.js': [ files.js, files.main ],
+          'dist/ng-image-upload-template-in.js': [ files.js, files.main_templates_in, 'tmp/templates.js' ]
+        }
       },
     },
     clean : {
-        dist : {
-            src : [ "dist/templates.js",
-            ]
-        }
+      dist: { src: 'dist/' },
+      tmp: { src: 'tmp/' }
     },
     karma: {
       unit: {
@@ -93,5 +94,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-html2js');
 
   // Default task.
-  grunt.registerTask('build', ['jshint', 'html2js', 'concat', 'clean']);
+  grunt.registerTask('build', [ 'jshint', 'html2js', 'clean:dist', 'concat', 'clean:tmp' ]);
 };
