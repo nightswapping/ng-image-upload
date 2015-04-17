@@ -162,50 +162,25 @@ The token Url is the url on which the directive will issue a GET request to get 
   }])
 ```
 
-### Using custom templates
+### Using the default template 
 
-The directive comes with a default template for the interface. It is stores it the app's $templateCache and can be easily overwritten. Simply add a new template for the key 'templates/imgupload.tpl.jade'.
+To use the default template, simply pick up `dist/ng-image-upload-template-in.js` and use the directive. It will automatically use the default template.
 
-The default template is the following:
+### Using a custom template
 
-```jade
-div(nv-file-drop='', uploader='uploader')
-  .container(ng-switch='tokenStatus')
-    .row(ng-switch-when='received')
-      .col-md-3
-        h3 Select files
-        div(ng-show='uploader.isHTML5')
-          .well.my-drop-zone(nv-file-over='', uploader='uploader') Base drop zone
-        | Single
-        input(type='file', nv-file-select='', uploader='uploader')
-      .col-md-9(style='margin-bottom: 40px')
-        h2 Files
-        div(ng-repeat='item in uploader.queue')
-          div(ng-show="uploader.isHTML5", ng-thumb="{ file: item._file, height: 100 }")
-          strong {{ item.file.name }}
-          p(
-          ng-show='uploader.isHTML5',
-          nowrap='',
-          style='display: inline-block') {{ item.file.size/1024/1024|number:2 }} MB
-        div
-          button.btn.btn-success.btn-s(
-          type='button',
-          ng-click='uploader.uploadAll()',
-          ng-disabled='!uploader.getNotUploadedItems().length')
-            | Upload picture
-          button.btn.btn-danger.btn-s(
-          type='button',
-          ng-click='uploader.clearQueue()',
-          ng-disabled='!uploader.queue.length')
-            | Remove picture
-    .row(ng-switch-when='missing')
-      .col-md-12
-        h1 No token has been received
+The directive comes in 2 distributions : with a default template for the interface, and without it. If you want to use your own template, simply pick up `dist/ng-image-upload.js` and pass your template's URL (or its address in templateCache) to the directive as an attribute.
+
+```html
+<img-upload template-url="app/templates/image-upload.tpl.jade"></img-upload>
 ```
 
-Most of the variables are self-explanatory and should be added to your custom templates.
-The directive exposes a switch variables which is optional: it toggles different views depending on whether or not the token has been received or not.
+__Alternative method:__
 
+You can also use your own template by putting it inside the templateCache in the place the directive expects it to be by default: `templates/ng-image-upload.tpl.jade`. This trick works for both distributions and allows you to use the same template wherever you use the directive in your app.
+
+```javascript
+$templateCache.put('templates/ng-image-upload.tpl.jade', 'This is the content of the template');
+```
 
 ### Demo
 

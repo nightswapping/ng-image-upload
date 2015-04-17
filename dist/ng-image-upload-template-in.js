@@ -186,7 +186,7 @@
         fetchToken: '='
       },
       templateUrl: function (elem, attrs) {
-        return attrs.templateUrl || 'templates/imgupload.tpl.jade';
+        return attrs.templateUrl || 'templates/ng-image-upload.tpl.jade';
       },
       controller: 'uploads.controllers',
       link: function(scope, element, attributes) {
@@ -343,10 +343,10 @@
     'uploads.directives'
   ])
 );
-;angular.module('uploads.templates', ['templates/imgupload.tpl.jade']);
+;angular.module('uploads.templates', ['templates/ng-image-upload.tpl.jade']);
 
-angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("templates/imgupload.tpl.jade",
+angular.module("templates/ng-image-upload.tpl.jade", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/ng-image-upload.tpl.jade",
     "<div nv-file-drop=\"\" uploader=\"uploader\">\n" +
     "  <div class=\"container\">\n" +
     "    <div class=\"row\">\n" +

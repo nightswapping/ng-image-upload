@@ -186,7 +186,7 @@
         fetchToken: '='
       },
       templateUrl: function (elem, attrs) {
-        return attrs.templateUrl || 'templates/imgupload.tpl.jade';
+        return attrs.templateUrl || 'templates/ng-image-upload.tpl.jade';
       },
       controller: 'uploads.controllers',
       link: function(scope, element, attributes) {
