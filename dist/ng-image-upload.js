@@ -3,8 +3,8 @@ angular.module('uploads.templates', ['templates/imgupload.tpl.jade']);
 angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/imgupload.tpl.jade",
     "<div nv-file-drop=\"\" uploader=\"uploader\">\n" +
-    "  <div ng-switch=\"tokenStatus\" class=\"container\">\n" +
-    "    <div ng-switch-when=\"ok\" class=\"row\">\n" +
+    "  <div class=\"container\">\n" +
+    "    <div class=\"row\">\n" +
     "      <div class=\"col-md-3\">\n" +
     "        <h3>Select files</h3>\n" +
     "        <div ng-show=\"uploader.isHTML5\">\n" +
@@ -22,11 +22,6 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
     "          <button type=\"button\" ng-click=\"uploader.uploadAll()\" ng-disabled=\"!uploader.getNotUploadedItems().length\" class=\"btn btn-success btn-s\">Upload picture</button>\n" +
     "          <button type=\"button\" ng-click=\"uploader.clearQueue()\" ng-disabled=\"!uploader.queue.length\" class=\"btn btn-danger btn-s\">Remove picture</button>\n" +
     "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "    <div ng-switch-when=\"missing\" class=\"row\">\n" +
-    "      <div class=\"col-md-12\">\n" +
-    "        <h1>No token has been received</h1>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +

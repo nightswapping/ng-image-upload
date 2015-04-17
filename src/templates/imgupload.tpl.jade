@@ -1,6 +1,6 @@
 div(nv-file-drop='', uploader='uploader')
-  .container(ng-switch='tokenStatus')
-    .row(ng-switch-when='ok')
+  .container
+    .row
       .col-md-3
         h3 Select files
         div(ng-show='uploader.isHTML5')
@@ -27,6 +27,3 @@ div(nv-file-drop='', uploader='uploader')
           ng-click='uploader.clearQueue()',
           ng-disabled='!uploader.queue.length')
             | Remove picture
-    .row(ng-switch-when='missing')
-      .col-md-12
-        h1 No token has been received
