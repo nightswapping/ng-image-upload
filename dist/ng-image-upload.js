@@ -263,7 +263,9 @@ angular.module("templates/imgupload.tpl.jade", []).run(["$templateCache", functi
         onUploadFinished: '=',
         getTokenUrl: '&tokenUrl'
       },
-      templateUrl: 'templates/imgupload.tpl.jade',
+      templateUrl: function (elem, attrs) {
+        return attrs.templateUrl || 'templates/imgupload.tpl.jade';
+      },
       controller: 'uploads.controllers',
       link: function(scope, element, attributes) {
 
