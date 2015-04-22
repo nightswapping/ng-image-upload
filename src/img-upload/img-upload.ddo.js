@@ -21,7 +21,7 @@
         fetchToken: '='
       },
       templateUrl: function (elem, attrs) {
-        return attrs.templateUrl || 'templates/ng-image-upload.tpl.jade';
+        return attrs.templateUrl || 'img-upload/img-upload.tpl.jade';
       },
       controller: 'uploads.controllers',
       controllerAs: 'vm',

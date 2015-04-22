@@ -4,8 +4,8 @@ module.exports = function (grunt) {
   var files = {
 
     js: 'src/*/*.js',
-    main: 'src/uploads.js',
-    main_templates_in: 'src/uploads-templates-in.js'
+    main: 'src/ng-image-upload.js',
+    main_templates_in: 'src/ng-image-upload-templates-in.js'
 
   };
 
@@ -50,7 +50,7 @@ module.exports = function (grunt) {
       },
       main: {
         files: {
-          'tmp/templates.js': [ 'src/templates/*.tpl.jade' ]
+          'tmp/templates.js': [ 'src/**/*.tpl.jade' ]
         }
       },
     },

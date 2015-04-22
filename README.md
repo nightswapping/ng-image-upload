@@ -176,10 +176,10 @@ The directive comes in 2 distributions : with a default template for the interfa
 
 __Alternative method:__
 
-You can also use your own template by putting it inside the templateCache in the place the directive expects it to be by default: `templates/ng-image-upload.tpl.jade`. This trick works for both distributions and allows you to use the same template wherever you use the directive in your app.
+You can also use your own template by putting it inside the templateCache in the place the directive expects it to be by default: `img-upload/img-upload.tpl.jade`. This trick works for both distributions and allows you to use the same template wherever you use the directive in your app.
 
 ```javascript
-$templateCache.put('templates/ng-image-upload.tpl.jade', 'This is the content of the template');
+$templateCache.put('img-upload/img-upload.tpl.jade', 'This is the content of the template');
 ```
 
 ### Demo
