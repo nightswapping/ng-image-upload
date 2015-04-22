@@ -8,6 +8,12 @@
   function uploadsControllers ($http, $log, $sessionStorage, utils, FileUploader) {
     var vm = this;
 
+    // Don't let the controller get initialized if no token url was provided
+    if ((!vm.getTokenUrl || !vm.getTokenUrl()) && !vm.fetchToken) {
+      throw new Error('img-upload directive must be provided a token-url through the eponymous attribute,' +
+        ' or a token promise.');
+    }
+
     vm.$storage = $sessionStorage;
 
     var isFileTooBig;
@@ -21,9 +27,17 @@
 
       // The token should be a JSON object containing the bucket URL, the filename to upload to, the AWS key,
       // the policy that authorizes the upload and its signature (see the docs) 
-      // We get it from the server at the URL provided to the directive
-      $http.post(vm.getTokenUrl(), { filename: fileItem.file.name })
-      .success(function success (token) {
+      // We get it throught the passed function, or from the server at the URL provided to the directive
+      (vm.fetchToken || function httpFetchToken (postData, success, failure) {
+        $http.post(vm.getTokenUrl(), postData)
+        .success(function _success (data) {
+          success(data);
+        })
+        .error(function _failure (data) {
+          failure(data)
+        });
+      })
+      ({ filename: fileItem.file.name }, function success (token) {
 
         // Define policy and signature for AWS upload
         vm.token = token;
