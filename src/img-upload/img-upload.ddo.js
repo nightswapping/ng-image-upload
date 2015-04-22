@@ -10,6 +10,7 @@
       restrict: 'E',
       scope: {
         queueLimit: '=',
+        uploader: '=?',
         sizeLimit: '=',
         removeAfterUpload: '=',
         method: '=',
