@@ -1,8 +1,10 @@
 {
   "name": "ng-image-upload",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "authors": [
-    "Arnaud Drizard <arnaud.drizard@gmail.com>"
+    "Nightswapping <http://nightswapping.com>",
+    "Arnaud Drizard <arnaud.drizard@gmail.com>",
+    "Mehdi Benadda <me@mbenadda.com>"
   ],
   "description": "A module to handle img upload with resizing, caching and queueing",
   "main": "uploads.js",
