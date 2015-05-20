@@ -124,7 +124,6 @@
         canvas.style.visibility = 'hidden';
         document.body.appendChild(canvas);
 
-        vm.uploader.url = vm.token.uploadUrl;
       }, function failure (error) {
         throw new Error(error);
       });
