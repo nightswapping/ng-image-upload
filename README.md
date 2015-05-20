@@ -101,7 +101,49 @@ Before using the directive, you need to create and configure an Amazon S3 bucket
 
 imgUpload is used as a simple element directive: ` <img-upload></img-upload> `.
 
-#### queueLimit (optional, default 1)
+### Required parameters
+
+imgUpload needs to get the policy token that will be sent to amazon alongside the file. There are two ways to hand your policy token to `ng-image-upload`. 
+
+You can use any of these two parameters but if none of them is present, imgUpload will throw as soon as its controller is loaded.
+
+#### tokenUrl - Provide a URL
+
+`ng-image-upload` will make a POST request on this URL with the filename and expect the policy token in return. Here is an example:
+
+```html
+<img-upload token-url="https://www.example.com/api/tokenroute"></img-upload>
+```
+
+```
+POST https://www.example.com/api/tokenroute { filename: 'my_file.jpg' }
+```
+
+`ng-image-upload` will expect the policy token as a response to this request. Note that this call uses angular.js's own `$http` so if you have setup a cookie or token interceptor for authentication, this should play nice with it.
+
+#### getToken - Provide a fetcher function
+
+If you need more advanced control over the token fetching, you can provide a function that will make the necessary calls. `ng-image-upload` will call it with the filename, a success callback that prepares the upload, and a failure callback that simply throws. Here is an example:
+
+```javascript
+// params: { filename: 'my_file.jpg' }
+// success: the callback to trigger when the token has been fetched
+// failure: a simple throwing callback
+vm.fetchToken = function (params, success, failure) {
+  // Fetch the token
+  // ...
+
+  success(token);
+};
+```
+
+```html
+<img-upload get-token="vm.fetchToken"></img-upload>
+```
+
+### Optional parameters
+
+#### queueLimit (default 1)
 
 Number of picture which can be uploaded
 
@@ -109,7 +151,7 @@ Number of picture which can be uploaded
     <img-upload queue-limit='10'></img-upload>
 ```
 
-#### sizeLimit (optional, default 10mo)
+#### sizeLimit (default 10mo)
 
 Limit to the size of the file to be uploaded in octets.
 
@@ -117,7 +159,7 @@ Limit to the size of the file to be uploaded in octets.
     <img-upload size-limit='8000000'></img-upload>
 ```
 
-#### method (optional, default 'POST')
+#### method (default 'POST')
 
 Http request method used for the upload. Note that AWS only accepts POST's
 
@@ -125,7 +167,7 @@ Http request method used for the upload. Note that AWS only accepts POST's
     <img-upload method='PUT'></img-upload>
 ```
 
-#### removeAfterUpload (optional, default true)
+#### removeAfterUpload (default true)
 
 if true, the picture is removed from the queue and the thumbnail disappears once the upload is complete
 
@@ -133,26 +175,16 @@ if true, the picture is removed from the queue and the thumbnail disappears once
     <img-upload remove-after-upload='false'></img-upload>
 ```
 
-#### acceptAllTypes (optional, default false)
+#### acceptAllTypes (default false)
 
 if false, a filter is added to accept only jpg, png, jpeg, bmp and gif files
 
-#### onUploadFinished (optional, default noop)
+#### onUploadFinished (default noop)
 
 A callback can be passed to the directive: onUploadFinished is called whenever the upload is done, no matter if it succeeded or not. An error is passed as argument (='null' if success).
 
 ```html
     <img-upload on-upload-finished="someFunction"></img-upload>
-```
-
-### Pass the token Url
-
-The token Url is the url on which the directive will issue a GET request to get the AWSKey, policy, signature and url specified earlier. To pass it to the directive, configure the token provider as follows:
-
-```javascript
-  .config(['tokenProvider', function(tokenProvider) {
-    tokenProvider.setUrl('token')
-  }])
 ```
 
 ### Using the default template 
