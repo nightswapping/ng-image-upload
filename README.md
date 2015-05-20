@@ -1,27 +1,25 @@
-# imgUpload
+# ng-image-upload
 
 [ ![ng-image-upload master](https://codeship.com/projects/58520180-890e-0132-21fc-7a1f56d80b92/status?branch=master)](https://codeship.com/projects/59578)
 
-A simple directive to upload images to Amazon S3 servers.
+**A simple directive to upload images to Amazon S3 servers.**
 
-The directive follows a very simple flow to work:
+It follows a very straightforward workflow:
 
 1. It requires an AWS token from your server
-
 2. Once provided, it displays an upload form
-
 3. Once a picture is added, it resizes it and stores it in session storage if possible
-
 4. It uploads it onto AWS S3
 
-### Dependencies:
+## Dependencies:
 
 imgUpload uses 3 dependencies which needs to be loaded before usage:
 - [AngularJs] (https://github.com/angular/angular.js)
 - [angular-file-upload] (https://github.com/nervgh/angular-file-upload)
 - [ngStorage] (https://github.com/gsklee/ngStorage)
 
-### Generating AWS S3 tokens:
+## Generating AWS S3 tokens
+
 Before using the directive, you need to create and configure an Amazon S3 bucket:
 
 1. Create a bucket:
@@ -99,15 +97,9 @@ Before using the directive, you need to create and configure an Amazon S3 bucket
 
     If you need more details on these fields, you can read [Amazon S3's own documentation](http://docs.aws.amazon.com/AmazonS3/latest/dev/HTTPPOSTForms.html).
 
-### Directive definition
+## Using the imgUpload directive
 
-#### Calling the directive
-
-The directive is defined as a simple element directive:
-
-```html
-    <img-upload></img-upload>
-```
+imgUpload is used as a simple element directive: ` <img-upload></img-upload> `.
 
 #### queueLimit (optional, default 1)
 
@@ -149,8 +141,8 @@ if false, a filter is added to accept only jpg, png, jpeg, bmp and gif files
 
 A callback can be passed to the directive: onUploadFinished is called whenever the upload is done, no matter if it succeeded or not. An error is passed as argument (='null' if success).
 
-```javascript
-    <img-upload on-upload-finished='someFunction'></img-upload>
+```html
+    <img-upload on-upload-finished="someFunction"></img-upload>
 ```
 
 ### Pass the token Url
