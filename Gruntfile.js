@@ -93,6 +93,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-html2js');
 
-  // Default task.
   grunt.registerTask('build', [ 'jshint', 'html2js', 'clean:dist', 'concat', 'clean:tmp' ]);
+  grunt.registerTask('default', [ 'build', 'karma' ]);
 };
