@@ -21,7 +21,7 @@
         // the token ourselves, or they can hand over a function to do it.
         // This second option is more comprehensive as it allows the user to address errors or special cases directly.
         getTokenUrl: '&tokenUrl',
-        fetchToken: '=token'
+        fetchToken: '=getToken'
       },
       templateUrl: function (elem, attrs) {
         return attrs.templateUrl || 'img-upload/img-upload.tpl.jade';

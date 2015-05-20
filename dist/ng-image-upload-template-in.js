@@ -9,10 +9,10 @@
     var vm = this,
         isFileTooBig;
 
-    // Don't let the controller get initialized if no token url was provided
+    // Don't let the controller get initialized if no token url or token getter function was provided
     if ((!vm.getTokenUrl || !vm.getTokenUrl()) && !vm.fetchToken) {
-      throw new Error('img-upload directive must be provided a token-url through the eponymous attribute,' +
-        ' or a token promise.');
+      throw new Error('img-upload directive must be provided either a token-url through the eponymous attribute,' +
+        ' or a token getter function through get-token.');
     }
 
     vm.$storage = $sessionStorage;
@@ -202,7 +202,7 @@
         // the token ourselves, or they can hand over a function to do it.
         // This second option is more comprehensive as it allows the user to address errors or special cases directly.
         getTokenUrl: '&tokenUrl',
-        fetchToken: '=token'
+        fetchToken: '=getToken'
       },
       templateUrl: function (elem, attrs) {
         return attrs.templateUrl || 'img-upload/img-upload.tpl.jade';
