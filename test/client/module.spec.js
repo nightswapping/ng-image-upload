@@ -8,17 +8,21 @@ describe('Testing Module Definition', function() {
       fileItem,
       fetchToken = jasmine.createSpy();
 
-  beforeEach(module('ng-image-upload.img-upload-ctrl'));
+  beforeEach(module('ng-image-upload'));
 
-  beforeEach(inject(function (_$rootScope_, $controller, _$http_) {
+  beforeEach(inject(function ($compile, _$rootScope_, _$http_) {
+    var scope, element;
+
     $http = _$http_;
     $rootScope = _$rootScope_;
 
     token = {
-      url: 'foo',
-      AWSKey: 'bar',
-      policy: 'fiz',
-      signature: 'buz'
+      acl: 'public-read',
+      AWSAccessKeyId: 'foo',
+      key: 'bar',
+      policy: 'fizz',
+      signature: 'buzz',
+      url: 'https://example.com'
     };
 
     fileItem = {
@@ -44,11 +48,14 @@ describe('Testing Module Definition', function() {
       };
     });
 
-    vm = $controller('uploads.controllers', {});
+    scope = $rootScope.$new();
+    scope.tokenUrl = function () { return 'token-url'; }
 
-    vm.getTokenUrl = function () {
-      return 'token-url';
-    };
+    element = '<img-upload token-url="tokenUrl"></img-upload>';
+    element = $compile(element)(scope);
+    scope.$apply();
+
+    vm = element.isolateScope().vm;
   }));
 
   describe('Configure states', function () {
@@ -77,9 +84,11 @@ describe('Testing Module Definition', function() {
 
       $rootScope.$apply()
       expect(dummy.formData.length).toEqual(1)
-      expect(dummy.formData[0].key).toEqual('foobar')
-      expect(dummy.formData[0].AWSAccessKeyId).toEqual('bar')
-      expect(dummy.formData[0].acl).toEqual('private')
+      expect(dummy.formData[0].acl).toEqual('public-read')
+      expect(dummy.formData[0].AWSAccessKeyId).toEqual('foo')
+      expect(dummy.formData[0].key).toEqual('bar')
+      expect(dummy.formData[0].policy).toEqual('fizz')
+      expect(dummy.formData[0].signature).toEqual('buzz')
     });
 
     it('creates a hidden canvas element on the DOM', function () {
