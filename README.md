@@ -74,29 +74,30 @@ Before using the directive, you need to create and configure an Amazon S3 bucket
 
     Note that for data-centers located in Frankfurt, you need a SHA-256 HMAC and not a SHA-1
 
-5. Provide the signature to the directives
+5. Provide the upload policy token
 
-The directive will make an HTTP POST Request to your server on the URL you provided it with. The request provides the item `filename` so you can modify it to normalize your items name or leave it as it is.
+    This is what the client will pass to Amazon S3 in addition to the file to authenticate (through the signature) and authorize the upload. You must be especially careful : if the data in this token does not match your signed policy, the upload will be rejected with a `403 Forbidden` error.
 
-You must provide the following items on response:
-```json
-{
-    "AWSKey" : "<YOUR AWS PUBLIC KEY>",
-    "policy": "<YOUR BASE-64 ENCODED POLICY>",
-    "signature": "<YOUR BASE-64 ENCODED HMAC-SHA1 SIGNATURE>", // HMAC-SHA-256 for Frankfurt
-    "filename": <the item filename>, (optional - you can modify the item file name or leave it as it is)
-    "uploadUrl": "https://<YOUR BUCKET NAME>.s3.amazonaws.com/",
-    "responseUrl": "<your response url>", (optional - only if you want to receive the response from AWS)
-}
-```
-If you are using AWS or a thier hosting service, you'll likely want to get notified of the upload result. To do so, just pass a `responseUrl` parameter. A post request will be issued to this url with the following parameter.
-```json
-{
-  filename: <the filname just uploaded>,
-  response: 'success' || 'error',
-  status: <the HTTP response status code>
-}
-```
+    To avoid any mishaps, `ng-img-upload` expects a very precise formatting of the policy token, and **will throw** if your token does not abide by it.
+
+    ```javascript
+    {
+        // These 5 fields are the required upload policy fields
+        "acl": "<YOUR ACCESS-CONTROL-LIST>",
+        "AWSAccessKeyId" : "<YOUR AWS PUBLIC KEY>",
+        // should include the path to the file, eg /media/user/1234/profile_0.jpg
+        "key": "<THE FILE'S KEY ON AMAZON S3>",
+        "policy": "<YOUR BASE-64 ENCODED POLICY>",
+        // HMAC-SHA-1 for any s3 region, HMAC-SHA-256 for Frankfurt
+        "signature": "<YOUR BASE-64 ENCODED SIGNATURE>", 
+        
+        // This field is not part of the policy token per se, but ng-image-upload
+        // will extract it and remove it before sending the policy.
+        "url": "https://<YOUR BUCKET NAME>.s3.amazonaws.com/"
+    }
+    ```
+
+    If you need more details on these fields, you can read [Amazon S3's own documentation](http://docs.aws.amazon.com/AmazonS3/latest/dev/HTTPPOSTForms.html).
 
 ### Directive definition
 
