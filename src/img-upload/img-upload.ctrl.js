@@ -3,9 +3,9 @@
 
   app.controller('uploads.controllers', uploadsControllers);
   
-  uploadsControllers.$inject = [ '$http', '$log', '$sessionStorage', 'uploadsUtils', 'FileUploader' ];
+  uploadsControllers.$inject = [ '$http', '$log', '$sessionStorage', 'uploadsUtils', 'FileUploader', 'validatePolicyToken' ];
   
-  function uploadsControllers ($http, $log, $sessionStorage, utils, FileUploader) {
+  function uploadsControllers ($http, $log, $sessionStorage, utils, FileUploader, validatePolicyToken) {
     var vm = this,
         isFileTooBig;
 
@@ -89,28 +89,22 @@
         });
       })
       ({ filename: fileItem.file.name }, function success (token) {
+        var formData;
 
-        // Define policy and signature for AWS upload
+        // Assign the token to the controller, check and clean it to add it to the form that we will post to amazon.
         vm.token = token;
+        formData = validatePolicyToken(vm.token);
 
-        // Use the filename provided by the server if any
-        fileItem.file.name = vm.token.filename || fileItem.file.name;
+        // Add the content-type header to the form that will be sent to S3
+        formData['Content-Type'] = (fileItem.file.type !== '') ? fileItem.file.type : 'application/octet-stream';
 
-        // Url to hit for the post request
+        // The data that will be sent to S3 along with the file. It contains the data in the policy token and the Content-Type
+        fileItem.formData.push(formData);
+
+        // The URL we will be uploading to. This should be the S3 bucket's URL
         vm.uploader.url = vm.token.uploadUrl;
         fileItem.url = vm.token.uploadUrl;
-
-        // Updates the formData for Amazon AWS S3 Upload
-        fileItem.formData.push({
-          key:  fileItem.file.name,
-          AWSAccessKeyId: vm.token.AWSKey,
-          acl: 'private',
-          'Content-Type': (fileItem.file.type !== '') ? fileItem.file.type : 'application/octet-stream',
-          filename: vm.token.filename,
-          policy: vm.token.policy,
-          signature: vm.token.signature
-        });
-
+        
         var reader = new FileReader();
 
         // Turns img into a dataUrl so it can
@@ -182,5 +176,6 @@
 })(angular.module('ng-image-upload.img-upload-ctrl', [
   'angularFileUpload',
   'ngStorage',
-  'ng-image-upload.upload-utils'
+  'ng-image-upload.upload-utils',
+  'ng-image-upload.validate-policy-token'
 ]));
