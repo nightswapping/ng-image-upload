@@ -100,8 +100,8 @@
         fileItem.formData.push(formData);
 
         // The URL we will be uploading to. This should be the S3 bucket's URL
-        vm.uploader.url = vm.token.uploadUrl;
-        fileItem.url = vm.token.uploadUrl;
+        vm.uploader.url = vm.token.url;
+        fileItem.url = vm.token.url;
         
         var reader = new FileReader();
 
