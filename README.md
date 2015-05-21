@@ -8,7 +8,7 @@ It follows a very straightforward workflow:
 
 1. It requires an AWS token from your server
 2. Once provided, it displays an upload form
-3. Once a picture is added, it resizes it and stores it in session storage if possible
+3. Once a picture is added, it resizes it and can display it as a thumbnail
 4. It uploads it onto AWS S3
 
 ## Installing ng-image-upload
@@ -21,10 +21,9 @@ After that, include one of the two distributions in your `index.html` and add `'
 
 #### Dependencies
 
-imgUpload has 3 dependencies which need to be loaded before using it:
+imgUpload has 2 dependencies which need to be loaded before using it:
 - [angular.js] (https://github.com/angular/angular.js)
 - [angular-file-upload] (https://github.com/nervgh/angular-file-upload)
-- [ngStorage] (https://github.com/gsklee/ngStorage)
 
 Note that `lodash` and a few others are required as devDependencies in package.json but are simply build requirements. They are neither included nor required for `ng-image-upload` to function properly.
 

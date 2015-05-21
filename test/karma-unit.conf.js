@@ -11,7 +11,6 @@ module.exports = function ( karma ) {
     files: [
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
-      'bower_components/ngstorage/ngStorage.js',
       'bower_components/angular-file-upload/angular-file-upload.js',
       'node_modules/lodash/index.js',
       'dist/ng-image-upload-template-in.js',

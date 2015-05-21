@@ -35,7 +35,7 @@
         return new Blob([ new Uint8Array(array) ], { type: mimeString });
       },
 
-      getDimensions: function(canvas, sessionStorage) {
+      getDimensions: function(canvas) {
         // Triggered when the image is loaded to resize if necessary
         return function() {
           var maxHeight = 1600;
@@ -61,9 +61,6 @@
           // Draw image on canvas
           var ctx = canvas.getContext("2d");
           ctx.drawImage(this, 0, 0, width, height);
-
-          // Stores the img in session storage
-          sessionStorage.reader = canvas.toDataURL(type, quality);
         };
       }
     };

@@ -3,9 +3,9 @@
 
   app.controller('uploads.controllers', uploadsControllers);
   
-  uploadsControllers.$inject = [ '$http', '$log', '$sessionStorage', 'uploadsUtils', 'FileUploader', 'validatePolicyToken' ];
+  uploadsControllers.$inject = [ '$http', '$log', 'uploadsUtils', 'FileUploader', 'validatePolicyToken' ];
   
-  function uploadsControllers ($http, $log, $sessionStorage, utils, FileUploader, validatePolicyToken) {
+  function uploadsControllers ($http, $log, utils, FileUploader, validatePolicyToken) {
     var vm = this,
         isFileTooBig;
 
@@ -14,8 +14,6 @@
       throw new Error('img-upload directive must be provided either a token-url through the eponymous attribute,' +
         ' or a token getter function through get-token.');
     }
-
-    vm.$storage = $sessionStorage;
 
     // Make sure we can use this callback safely
     vm.onUploadFinished = vm.onUploadFinished || angular.noop;
@@ -112,13 +110,6 @@
         reader.readAsDataURL(fileItem._file);
         reader.onload = onLoad;
 
-        try {
-          vm.$storage.reader = reader;
-        } catch(e) {
-          isFileTooBig = true;
-          throw new Error(e);
-        }
-
         // To resize the picture we need a hidden canvas
         // to draw a new pic with the expected dimensions
         canvas.style.visibility = 'hidden';
@@ -132,15 +123,6 @@
         var img = new Image();
         img.onload = utils.getDimensions(canvas, vm.$storage);
         img.src = event.target.result;
-      }
-    };
-
-    // angular-file-upload callback. This is fired before a file is uploaded
-    vm.uploader.onBeforeUploadItem = function(fileItem) {
-      // Parse the item stored in session storage
-      // before the server upload
-      if (!isFileTooBig) {
-        fileItem._file = utils.dataURItoBlob(vm.$storage.reader);
       }
     };
 
@@ -165,16 +147,12 @@
 
     // angular-file-upload callback. This is fired when an upload is finished, whether it was successful or not.
     vm.uploader.onCompleteItem = function(fileItem, response, status, headers) {
-      // Empty the session storage once the item has been uploaded
-      delete vm.$storage.reader;
-
       vm.onUploadFinished(null);
     };
   }
 
 })(angular.module('ng-image-upload.img-upload-ctrl', [
   'angularFileUpload',
-  'ngStorage',
   'ng-image-upload.upload-utils',
   'ng-image-upload.validate-policy-token'
 ]));
