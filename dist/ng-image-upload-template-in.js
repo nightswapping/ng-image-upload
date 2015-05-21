@@ -127,27 +127,16 @@
     };
 
     // angular-file-upload callback. This is fired when a file is successfully uploaded to the server.
-    // Post a success message to response url to notify the server everything went fine
     vm.uploader.onSuccessItem = function(fileItem, response, status, headers) {
-      if (vm.token.responseUrl) {
-        $http.post(vm.token.responseUrl, { filename: fileItem.file.name, response: 'success', status: status, headers: headers });
-      }
+      // There's no error to transmit. Pass the policy token so the consumer can figure out which upload finished
+      vm.onUploadFinished(null, fileItem.formData[0]);
     };
 
     // angular-file-upload callback. This is fired when a file could not be successfully uploaded to the server.
-    // Post an error message to response url to notify the server something went wrong
     vm.uploader.onErrorItem = function(fileItem, response, status, headers) {
-      if (vm.token.responseUrl) {
-        $http.post(vm.token.responseUrl, { filename: fileItem.file.name, response: 'error', status: status, headers: headers });
-      }
-
-      var err = new Error('Could not upload the picture.');
-      vm.onUploadFinished(err);
-    };
-
-    // angular-file-upload callback. This is fired when an upload is finished, whether it was successful or not.
-    vm.uploader.onCompleteItem = function(fileItem, response, status, headers) {
-      vm.onUploadFinished(null);
+      // The upload failed. Pass the error and transmit as much information as possible
+      vm.onUploadFinished(new Error(fileItem.formData[0].key +
+       ' could not be uploaded to Amazon S3. Status: ' + status + ' ' + response));
     };
   }
 
