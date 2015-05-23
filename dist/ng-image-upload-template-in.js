@@ -182,57 +182,63 @@
 })(angular.module('ng-image-upload.img-upload-directive', [
   'ng-image-upload.img-upload-ctrl'
 ]));
-;;(function(app) {
+;;(function (app) {
   'use strict';
 
-  // The ngThumb directive adds a picture thumbnail to the page
-  // Please note that it only works for browsers supporting the
-  // HTML5 FileReader API and the Canvas objects
+  // The ngThumb directive extracts the image from the fileItem it gets and draws a thumbnail of it on a canvas
+  // Please note that it only works for browsers supporting the HTML5 FileReader API and the Canvas objects
   app.directive('ngThumb', ngThumbDirective);
 
   ngThumbDirective.$inject = [ 'uploadsUtils' ];
-
   function ngThumbDirective (uploadsUtils) {
     return {
       restrict: 'A',
+      scope: {
+        fileItem: '=ngThumb',
+        width: '=',
+        height: '=',
+        fitToContainer: '='
+      },
+      bindToController: true,
+      controllerAs: 'vm',
+      controller: ngThumbController,
       template: '<canvas/>',
-      link: function(scope, element, attributes) {
+      link: function (scope, element, attributes) {
         // No thumbnail is added if the browser doesnt support it
         if (!uploadsUtils.checkBrowserCompatibility) {
           return;
         }
 
-        // Get the params from ng-thumb
-        var params = scope.$eval(attributes.ngThumb);
-
-        // Check file format
-        if (!uploadsUtils.isFile(params.file) ||
-          !uploadsUtils.isImage(params.file)) {
-            return;
-          }
-
-        var canvas = element.find('canvas');
-        var reader = new FileReader();
-
-        reader.onload = onLoadFile;
-        reader.readAsDataURL(params.file);
-
-        function onLoadFile(event) {
-          var img = new Image();
-          img.onload = onLoadImage;
-          img.src = event.target.result;
+        // Check file format - only display the thumbnail if the file actually is an image
+        if (!uploadsUtils.isFile(scope.vm.fileItem._file) || !uploadsUtils.isImage(scope.vm.fileItem._file)) {
+          return;
         }
 
-        function onLoadImage() {
-          var self = this;
-          var width = params.width || self.width / self.height * params.height;
-          var height = params.height || self.height / self.width * params.width;
-
-          canvas.attr({ width: width, height: height });
-          canvas[0].getContext('2d').drawImage(self, 0, 0, width, height);
-        }
+        scope.vm.canvas = element.find('canvas');
       }
     };
+  }
+
+  function ngThumbController () {
+    var vm = this,
+        reader = new FileReader();
+
+    reader.onload = onLoadFile;
+    reader.readAsDataURL(vm.fileItem._file);
+
+    function onLoadFile (event) {
+      var img = new Image();
+      img.onload = onLoadImage;
+      img.src = event.target.result;
+    }
+
+    function onLoadImage () {
+      var width = vm.width || this.width / this.height * vm.height,
+          height = vm.height || this.height / this.width * vm.width;
+
+      vm.canvas.attr({ width: width, height: height });
+      vm.canvas[0].getContext('2d').drawImage(this, 0, 0, width, height);
+    }
   }
 
 })(angular.module('ng-image-upload.ngthumb', [
@@ -367,7 +373,7 @@ angular.module("img-upload/img-upload.tpl.jade", []).run(["$templateCache", func
     "      <div style=\"margin-bottom: 40px\" class=\"col-md-9\">\n" +
     "        <h2>Files</h2>\n" +
     "        <div ng-repeat=\"item in vm.uploader.queue\">\n" +
-    "          <div ng-show=\"vm.uploader.isHTML5\" ng-thumb=\"{ file: item._file, height: 100 }\"></div><strong>{{ item.file.name }}</strong>\n" +
+    "          <div ng-show=\"vm.uploader.isHTML5\" ng-thumb=\"item\" height=\"100\"></div><strong>{{ item.file.name }}</strong>\n" +
     "          <p ng-show=\"vm.uploader.isHTML5\" nowrap=\"\" style=\"display: inline-block\">{{ item.file.size/1024/1024|number:2 }} MB</p>\n" +
     "        </div>\n" +
     "        <div>\n" +
