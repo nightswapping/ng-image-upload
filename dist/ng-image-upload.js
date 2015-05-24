@@ -102,6 +102,15 @@
         // The URL we will be uploading to. This should be the S3 bucket's URL
         vm.uploader.url = vm.token.url;
         fileItem.url = vm.token.url;
+
+        // Remove an item from the queue and trigger a callback from the consumer
+        vm.remove = function (item) {
+          // Trigger the consumer passed callback if there is one
+          (vm.onRemoveItem || angular.noop)(item);
+
+          // Actually remove the item from the queue. The remove method is available on all fileItems
+          item.remove();
+        }
         
         var reader = new FileReader();
 
@@ -164,6 +173,8 @@
         acceptAllTypes: '=',
         // onUploadFinished is called when the upload is done. If an error occurred, it is passed as argument
         onUploadFinished: '=?',
+        // onRemoveItem is called when the user removes an item from the queue
+        onRemoveItem: '=?',
         // fetchToken and tokenUrl coexist as alternatives. Either the user can provide an URL and let us fetch 
         // the token ourselves, or they can hand over a function to do it.
         // This second option is more comprehensive as it allows the user to address errors or special cases directly.

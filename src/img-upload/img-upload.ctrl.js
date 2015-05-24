@@ -102,6 +102,15 @@
         // The URL we will be uploading to. This should be the S3 bucket's URL
         vm.uploader.url = vm.token.url;
         fileItem.url = vm.token.url;
+
+        // Remove an item from the queue and trigger a callback from the consumer
+        vm.remove = function (item) {
+          // Trigger the consumer passed callback if there is one
+          (vm.onRemoveItem || angular.noop)(item);
+
+          // Actually remove the item from the queue. The remove method is available on all fileItems
+          item.remove();
+        }
         
         var reader = new FileReader();
 

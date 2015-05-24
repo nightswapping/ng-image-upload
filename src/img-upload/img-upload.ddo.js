@@ -17,6 +17,8 @@
         acceptAllTypes: '=',
         // onUploadFinished is called when the upload is done. If an error occurred, it is passed as argument
         onUploadFinished: '=?',
+        // onRemoveItem is called when the user removes an item from the queue
+        onRemoveItem: '=?',
         // fetchToken and tokenUrl coexist as alternatives. Either the user can provide an URL and let us fetch 
         // the token ourselves, or they can hand over a function to do it.
         // This second option is more comprehensive as it allows the user to address errors or special cases directly.
