@@ -11,8 +11,8 @@
       restrict: 'A',
       scope: {
         fileItem: '=ngThumb',
-        width: '=',
-        height: '=',
+        width: '=?',
+        height: '=?',
         fitToContainer: '='
       },
       bindToController: true,
@@ -28,6 +28,12 @@
         // Check file format - only display the thumbnail if the file actually is an image
         if (!uploadsUtils.isFile(scope.vm.fileItem._file) || !uploadsUtils.isImage(scope.vm.fileItem._file)) {
           return;
+        }
+
+        // If the image is to be sized depending on its container, keep its height and width
+        if (scope.vm.fitToContainer) {
+          scope.vm.width = element[0].clientWidth;
+          scope.vm.height = element[0].clientHeight;
         }
 
         scope.vm.canvas = element.find('canvas');
@@ -49,8 +55,28 @@
     }
 
     function onLoadImage () {
-      var width = vm.width || this.width / this.height * vm.height,
-          height = vm.height || this.height / this.width * vm.width;
+      var width, height, maxWidth, maxHeight, heightScaledToWidth, widthScaledToHeight;
+      // Use the container's width/height in fitToContainer mode, the passed width and/or height, or the image's own
+      // height and width as size targets.
+      maxWidth = vm.width || this.width / this.height * vm.height;
+      maxHeight = vm.height || this.height / this.width * vm.width;
+
+      // Calculate the height of the image scaled to fit the maximum width, and the width of the image scaled
+      // to fit the maximum height.
+      heightScaledToWidth = maxWidth / this.width * this.height;
+      widthScaledToHeight = maxHeight / this.height * this.width;
+
+      // Only one of the potential scaling ratios can fit in the maximum, use that one for the definitive
+      // width and height to set on the canvas.
+      if (heightScaledToWidth <= vm.height) {
+        width = vm.width;
+        height = heightScaledToWidth;
+      }
+
+      else if (widthScaledToHeight <= vm.width) {
+        width = widthScaledToHeight;
+        height = vm.height;
+      }
 
       vm.canvas.attr({ width: width, height: height });
       vm.canvas[0].getContext('2d').drawImage(this, 0, 0, width, height);
