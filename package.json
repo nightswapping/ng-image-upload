@@ -1,6 +1,6 @@
 {
   "name": "ng-image-upload",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Upload images directly from angular.js to Amazon S3",
   "main": "dist/ng-image-upload.js",
   "author": {
