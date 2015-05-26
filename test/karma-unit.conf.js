@@ -13,7 +13,7 @@ module.exports = function ( karma ) {
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/angular-file-upload/angular-file-upload.js',
       'node_modules/lodash/index.js',
-      'dist/ng-image-upload-template-in.js',
+      'dist/ng-image-upload.js',
       'test/**/*.spec.js'
     ],
     exclude: [

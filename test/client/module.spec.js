@@ -1,4 +1,4 @@
-describe('Testing Module Definition', function() {
+xdescribe('Testing Module Definition', function() {
 
   var $http,
       $rootScope,

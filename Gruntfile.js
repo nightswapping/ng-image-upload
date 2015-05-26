@@ -4,8 +4,7 @@ module.exports = function (grunt) {
   var files = {
 
     js: 'src/*/*.js',
-    main: 'src/ng-image-upload.js',
-    main_templates_in: 'src/ng-image-upload-templates-in.js'
+    main: 'src/ng-image-upload.js'
 
   };
 
@@ -44,24 +43,13 @@ module.exports = function (grunt) {
         }
       }
     },
-    html2js: {
-      options: {
-        module: 'ng-image-upload.img-upload-tpl'
-      },
-      main: {
-        files: {
-          'tmp/templates.js': [ 'src/**/*.tpl.jade' ]
-        }
-      },
-    },
     concat: {
       options: {
         separator: ';',
       },
       dist: {
         files: {
-          'dist/ng-image-upload.js': [ files.js, files.main ],
-          'dist/ng-image-upload-template-in.js': [ files.js, files.main_templates_in, 'tmp/templates.js' ]
+          'dist/ng-image-upload.js': [ files.js, files.main ]
         }
       },
     },
@@ -91,8 +79,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-html2js');
 
-  grunt.registerTask('build', [ 'jshint', 'html2js', 'clean:dist', 'concat', 'clean:tmp' ]);
+  grunt.registerTask('build', [ 'jshint', 'clean:dist', 'concat', 'clean:tmp' ]);
   grunt.registerTask('default', [ 'build', 'karma' ]);
 };
