@@ -13,10 +13,7 @@ module.exports = function (grunt) {
     // Task configuration.
     jshint: {
       all: [
-        'src/uploads.js',
-        'src/directives/**/*.js',
-        'src/controllers/**/*.js',
-        'src/services/**/*.js'
+        'src/**/*.js'
       ],
       options: {
         curly: true,
