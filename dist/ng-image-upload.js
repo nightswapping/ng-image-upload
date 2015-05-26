@@ -1,11 +1,23 @@
 ;(function(app) {
   'use strict';
 
-  app.controller('uploads.controllers', uploadsControllers);
+  app.controller('imgUploadCtrl', imgUploadCtrl)
+     .directive('imgUpload', imgUploadDirective);
+
+  function imgUploadDirective (uploadsUtils) {
+    return {
+      restrict: 'A',
+      scope: {
+        uploader: '=',
+        fetchToken: '=getToken'
+      },
+      controllerAs: 'vm',
+      bindToController: true
+    };
+  }
   
-  uploadsControllers.$inject = [ '$http', '$log', 'uploadsUtils', 'FileUploader', 'validatePolicyToken' ];
-  
-  function uploadsControllers ($http, $log, utils, FileUploader, validatePolicyToken) {
+  imgUploadCtrl.$inject = [ '$http', '$log', 'uploadsUtils', 'FileUploader', 'validatePolicyToken' ];
+  function imgUploadCtrl ($http, $log, utils, FileUploader, validatePolicyToken) {
     var vm = this,
         isFileTooBig;
 
@@ -22,15 +34,6 @@
      * Initialize and configure a file uploader
      */
     vm.uploader = new FileUploader();
-
-    // Set uploader method or default to POST
-    vm.uploader.method = vm.method || 'POST';
-
-    // Set uploader queue limit or default to 1
-    vm.uploader.queueLimit = vm.queueLimit || 1;
-
-    // Remove file from queue, hence from screen, after upload
-    vm.uploader.removeAfterUpload = vm.removeAfterUpload || true;
 
     // Set up filters to check that images should be uploaded before uploading them
     // Filters out the items that are not pictures
@@ -83,7 +86,7 @@
           success(data);
         })
         .error(function _failure (data) {
-          failure(data)
+          failure(data);
         });
       })
       ({ filename: fileItem.file.name }, function success (token) {
@@ -100,17 +103,7 @@
         fileItem.formData.push(formData);
 
         // The URL we will be uploading to. This should be the S3 bucket's URL
-        vm.uploader.url = vm.token.url;
         fileItem.url = vm.token.url;
-
-        // Remove an item from the queue and trigger a callback from the consumer
-        vm.remove = function (item) {
-          // Trigger the consumer passed callback if there is one
-          (vm.onRemoveItem || angular.noop)(item);
-
-          // Actually remove the item from the queue. The remove method is available on all fileItems
-          item.remove();
-        }
         
         var reader = new FileReader();
 
