@@ -11,76 +11,43 @@
       restrict: 'A',
       scope: {
         fileItem: '=ngThumb',
-        width: '=?',
-        height: '=?',
-        fitToContainer: '='
+        background: '='
       },
-      bindToController: true,
-      controllerAs: 'vm',
-      controller: ngThumbController,
-      template: '<canvas/>',
+      controller: function () {},
       link: function (scope, element, attributes) {
+
         // No thumbnail is added if the browser doesnt support it
         if (!uploadsUtils.checkBrowserCompatibility) {
           return;
         }
 
         // Check file format - only display the thumbnail if the file actually is an image
-        if (!uploadsUtils.isFile(scope.vm.fileItem._file) || !uploadsUtils.isImage(scope.vm.fileItem._file)) {
-          return;
+        if (!uploadsUtils.isFile(scope.fileItem._file) || !uploadsUtils.isImage(scope.fileItem._file)) {
+          var err = new Error('Attempting to use ngThumbs on a non File/image object');
+          err.data = { fileItem: scope.fileItem };
+          throw err;
         }
 
-        // If the image is to be sized depending on its container, keep its height and width
-        if (scope.vm.fitToContainer) {
-          scope.vm.width = element[0].clientWidth;
-          scope.vm.height = element[0].clientHeight;
-        }
+        // Create a reader and setup the callback to set the file as the image's source
+        var reader = new FileReader();
+        reader.onload = function onLoadFile (event) {
+          if (scope.background) {
+            // Just set our image as the background of the selected div
+            element[0].style['background-image'] = 'url(' + event.target.result + ')';
+          }
+          
+          else {
+            // Create an image, give it the correct SRC and insert it into the HTML
+            var img = document.createElement('img');
+            img.src = event.target.result;
+            element.append(img);
+          }
+        };
 
-        scope.vm.canvas = element.find('canvas');
+        // Trigger the actual file read
+        reader.readAsDataURL(scope.fileItem._file);
       }
     };
-  }
-
-  function ngThumbController () {
-    var vm = this,
-        reader = new FileReader();
-
-    reader.onload = onLoadFile;
-    reader.readAsDataURL(vm.fileItem._file);
-
-    function onLoadFile (event) {
-      var img = new Image();
-      img.onload = onLoadImage;
-      img.src = event.target.result;
-    }
-
-    function onLoadImage () {
-      var width, height, maxWidth, maxHeight, heightScaledToWidth, widthScaledToHeight;
-      // Use the container's width/height in fitToContainer mode, the passed width and/or height, or the image's own
-      // height and width as size targets.
-      maxWidth = vm.width || this.width / this.height * vm.height;
-      maxHeight = vm.height || this.height / this.width * vm.width;
-
-      // Calculate the height of the image scaled to fit the maximum width, and the width of the image scaled
-      // to fit the maximum height.
-      heightScaledToWidth = maxWidth / this.width * this.height;
-      widthScaledToHeight = maxHeight / this.height * this.width;
-
-      // Only one of the potential scaling ratios can fit in the maximum, use that one for the definitive
-      // width and height to set on the canvas.
-      if (heightScaledToWidth <= vm.height) {
-        width = vm.width;
-        height = heightScaledToWidth;
-      }
-
-      else if (widthScaledToHeight <= vm.width) {
-        width = widthScaledToHeight;
-        height = vm.height;
-      }
-
-      vm.canvas.attr({ width: width, height: height });
-      vm.canvas[0].getContext('2d').drawImage(this, 0, 0, width, height);
-    }
   }
 
 })(angular.module('ng-image-upload.ngthumb', [
